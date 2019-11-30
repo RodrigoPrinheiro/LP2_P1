@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IMDBDatabase
+﻿namespace IMDBDatabase
 {
     public enum TitleType
     {
-        FeatureFilm,
+        Movie,
         TvMovie,
         TvSeries,
         TvEpisode,
-        TvSpecial,
-        MiniSeries,
-        Documentary,
-        VideoGame,
-        ShortFilm,
-        Video,
         TvShort,
+        TvMiniSeries,
+        VideoGame,
+        Video,
+        Short,
     };
 }
