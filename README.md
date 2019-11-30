@@ -16,21 +16,18 @@ A complexidade atual é apenas para compreensão entre os dois membros**
 
 ### Descrição da solução
 
-* A procura e identificação dos títulos está baseado em uma `struct` `TitleID`
-, esta `struct` terá então dois inteiros, um com o identificador do título
- outro com o número de votos do título, um `float` para o _average rating_ e
-duas enumerações, uma sendo do tipo `Flags`:
+* A procura e identificação dos títulos está baseado em uma classe `Title`
+, esta classe tem todos os membros possíveis de pesquisar por, contendo uma
+enumeração para os tipos possíveis:
 
-    * A primeira enumeração `TitleTypes` contem o tipo do título 
+    * Enumeração `TitleTypes` contem o tipo do título 
 (imagem referência da [procura avançada do IMDB]), esta é preenchida adequadamente
 mesmo não sendo exatamente a informação em `string` que o ficheiro apresenta.  
 ![titleTypes]
 
-    * A segunda enumeração `TitleGenre` contem o género do título, podendo ser
-usado para pesquisas semelhantes à de tipo e nome, usando o atributo `Flags` para
-poder identificar o título com mais do que um género
-(imagem referência da [procura avançada do IMDB]).  
-![titleGenres]
+* A classe implemente um _composite design pattern_ modificado para o que é
+necessário nesta solução, assim como o _iterator pattern_ para iterar sobre 
+os possíveis episódios se este for uma série.
 
 ### Diagrama UML
 ![diagrama]
@@ -38,6 +35,5 @@ poder identificar o título com mais do que um género
 ## Referências
 
 [titletypes]:Images/Types.png
-[titleGenres]:Images/Genres.png
 [procura avançada do IMDB]:https://www.imdb.com/search/title/?ref_=fn_asr_tt
 [diagrama]:Images/DiagramaUML.png
