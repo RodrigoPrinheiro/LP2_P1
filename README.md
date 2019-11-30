@@ -17,7 +17,7 @@ A complexidade atual é apenas para compreensão entre os dois membros**
 ### Descrição da solução
 
 * A procura e identificação dos títulos está baseado em uma `struct` `TitleID`
-, esta `struct` terá então dois inteiro, um com o identificador do titulo
+, esta `struct` terá então dois inteiros, um com o identificador do título
  outro com o número de votos do título, um `float` para o _average rating_ e
 duas enumerações, uma sendo do tipo `Flags`:
 
