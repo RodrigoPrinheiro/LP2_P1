@@ -37,7 +37,7 @@ poder identificar o título com mais do que um género
 
 ## Referências
 
-[titletypes]:Images/TitleTypes.png
-[titleGenres]:Images/TitleGenres.png
+[titletypes]:Images/Types.png
+[titleGenres]:Images/Genres.png
 [procura avançada do IMDB]:https://www.imdb.com/search/title/?ref_=fn_asr_tt
 [diagrama]:Images/DiagramaUML.png
