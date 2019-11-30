@@ -23,7 +23,7 @@ duas enumerações, uma sendo do tipo `Flags`:
 
     * A primeira enumeração `TitleTypes` contem o tipo do título 
 (imagem referência da [procura avançada do IMDB]), esta é preenchida adequadamente
-mesmo não sendo exatamente a informação em `string` que o ficheiro apresenta.
+mesmo não sendo exatamente a informação em `string` que o ficheiro apresenta.  
 ![titleTypes]
 
     * A segunda enumeração `TitleGenre` contem o género do título, podendo ser
