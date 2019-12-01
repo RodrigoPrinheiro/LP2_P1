@@ -73,7 +73,7 @@ namespace IMDBDatabase
         /// <param name="genres">Genres of the Title, Drama, Action etc...</param>
         /// <param name="year">Years, start and finish, of the Title</param>
         /// <param name="content">Is the content adult or not</param>
-        public Title(int id, int votes, float score, string name,
+        public Title(int id, Rating rating, string name,
             string type, string genres, string[] year, bool content)
         {
             // Temporary variable to parse years
@@ -88,8 +88,8 @@ namespace IMDBDatabase
 
             // Initialize Variables
             ID = id;
-            Votes = votes;
-            AverageScore = score;
+            Votes = rating.Votes;
+            AverageScore = rating.Score;
             Name = name;
             Type = (TitleType)Enum.Parse(typeof(TitleType), type, true);
             Genres = genres.Split(',', ' ', StringSplitOptions.RemoveEmptyEntries);
