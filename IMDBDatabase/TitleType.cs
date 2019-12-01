@@ -24,6 +24,8 @@ namespace IMDBDatabase
         TvShort,
         /// <summary> defines Title as TvMiniSeries</summary>
         TvMiniSeries,
+        /// <summary> defines Title as TvSpecial</summary>
+        TvSpecial,
         /// <summary> defines Title as VideoGame</summary>
         VideoGame,
         /// <summary> defines Title as Video</summary>
