@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using System;
-using System.Text;
 
 namespace IMDBDatabase
 {
@@ -47,10 +46,22 @@ namespace IMDBDatabase
         {
             return _titles.Where(x => x.Year.Item2 == year);
         }
-        
+
         public IEnumerable<Title> SearchGenres(params string[] genres)
         {
+            IEnumerable<Title> intersectedGenreTitles;
+            intersectedGenreTitles = _titles.Where(x => x?.Genres[0].Contains(genres[0], StringComparison.CurrentCultureIgnoreCase) ?? false);
 
+            if(genres.Length > 1)
+                for (int i = 1; i < genres.Length; i++)
+                {
+                    intersectedGenreTitles.Intersect(
+                        _titles.Where(x => x?.Genres[i].Contains
+                            (genres[i], StringComparison.CurrentCultureIgnoreCase)
+                            ?? false));
+                }
+
+            return intersectedGenreTitles;
         }
     }
 }
