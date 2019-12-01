@@ -12,8 +12,6 @@ namespace IMDBDatabase
 
 		private static void ThomasDebug(string[] args)
 		{
-			string dataNames;
-
 			DataReader dr = new DataReader();
 
 			dr.ReadData();
