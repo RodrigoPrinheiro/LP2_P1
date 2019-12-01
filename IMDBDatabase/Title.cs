@@ -15,7 +15,7 @@ namespace IMDBDatabase
     /// Class representing a dataset for a Title of the IMDB database.
     /// Movies, series, shorts, video games etc...
     /// </summary>
-    public class Title : IEnumerable<Title>, IComparable<Title>
+    public class Title : IEnumerable<Title>, IComparable<Title>, IHasID
     {
         /// <summary>
         /// List of episodes if the title is a TvSeries
@@ -40,7 +40,7 @@ namespace IMDBDatabase
         /// <summary>
         /// Year of start and the year of end of the Title
         /// </summary>
-        public Tuple<int?, int?> Year { get; }
+        public Tuple<ushort?, ushort?> Year { get; }
 
         /// <summary>
         /// Main name of the Title, the name that is used the most
@@ -77,14 +77,14 @@ namespace IMDBDatabase
             string type, string genres, string[] year, bool content)
         {
             // Temporary variable to parse years
-            int i;
+            ushort i;
             // Nullable integers so we can have null years in case of a movie etc...
-            int? startYear = null;
-            int? endYear = null;
+            ushort? startYear = null;
+            ushort? endYear = null;
 
             // Parse the years
-            startYear = Int32.TryParse(year[0], out i) ? i : (int?)null;
-            endYear = Int32.TryParse(year[1], out i) ? i : (int?)null;
+            startYear = UInt16.TryParse(year[0], out i) ? i : (ushort?)null;
+            endYear = UInt16.TryParse(year[1], out i) ? i : (ushort?)null;
 
             // Initialize Variables
             ID = id;
@@ -94,7 +94,7 @@ namespace IMDBDatabase
             Type = (TitleType)Enum.Parse(typeof(TitleType), type, true);
             Genres = genres.Split(',', ' ', StringSplitOptions.RemoveEmptyEntries);
             AdultContent = content;
-            Year = new Tuple<int?, int?>(startYear, endYear);
+            Year = new Tuple<ushort?, ushort?>(startYear, endYear);
 
             // If it's any kind of series, initialize the list of episodes
             if(Type == (TitleType.TvMiniSeries | TitleType.TvSeries))

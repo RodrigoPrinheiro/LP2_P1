@@ -6,7 +6,7 @@ namespace IMDBDatabase
     {
         private static void PineTreeDebug()
         {
-
+            Console.WriteLine(ushort.MaxValue);
         }
 
         static void Main(string[] args)
