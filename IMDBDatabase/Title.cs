@@ -71,10 +71,10 @@ namespace IMDBDatabase
         /// <param name="name">Name of the Title.</param>
         /// <param name="type">Type of this Title, movie, series etc...</param>
         /// <param name="genres">Genres of the Title, Drama, Action etc...</param>
-        /// <param name="year">Years, start and finish, of the Title</param>
         /// <param name="content">Is the content adult or not</param>
+        /// <param name="year">Years, start and finish, of the Title</param>
         public Title(int id, int votes, float score, string name,
-            string type, string genres, string[] year, bool content)
+            string type, string genres, bool content, params string[] year)
         {
             // Temporary variable to parse years
             ushort i;
@@ -97,7 +97,10 @@ namespace IMDBDatabase
             Year = new Tuple<ushort?, ushort?>(startYear, endYear);
 
             // If it's any kind of series, initialize the list of episodes
-            if(Type == (TitleType.TvMiniSeries | TitleType.TvSeries))
+            if(Type == (
+				TitleType.TvMiniSeries | 
+				TitleType.TvSeries | 
+				TitleType.TvSpecial))
                 _episodes = new List<Title>();
         }
 
@@ -107,7 +110,8 @@ namespace IMDBDatabase
         /// <param name="episode">Episode to be added</param>
         public void AddEpisode(Title episode)
         {
-            if (Type == (TitleType.TvMiniSeries | TitleType.TvSeries))
+            if (Type == (
+				TitleType.TvMiniSeries | TitleType.TvSeries))
                 _episodes.Add(episode);
         }
 
