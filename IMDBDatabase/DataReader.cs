@@ -12,6 +12,9 @@ namespace IMDBDatabase
 		 *							###	TO-DO ###
 		 * - Try parse for when file not found
 		 * - Try parse for when file could not be uncompressed
+		 * - Return the headers
+		 * - Split stuff using the extracted headers
+		 * - Store everything
 		 * ####################################################################
 		*/
 
@@ -46,6 +49,47 @@ namespace IMDBDatabase
 					return finalOutput;
 				}
 			}
+		}
+
+		private string[] Parse(string data)
+		{
+			Console.WriteLine("Parsing...");
+
+			string[] lines = data.Split('\n');
+
+			string[] headers = GetHeaders(data);
+
+			Console.WriteLine("Parsing complete!");
+			return lines;
+		}
+
+		private string[] GetHeaders(string data)
+		{
+			string words = "";
+			string singleWord = "";
+
+			string[] headers = null;
+
+			foreach (char c in data)
+			{
+				singleWord += c;
+
+				if (c == '\t')
+				{
+					words += singleWord;
+					singleWord = "";
+				}
+
+				if (c == '\n')
+				{
+					words += singleWord;
+					singleWord = "";
+					headers = words.Split('\n', '\t');
+					break;
+				}
+			}
+
+			return headers;
 		}
 	}
 }
