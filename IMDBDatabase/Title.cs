@@ -23,6 +23,11 @@ namespace IMDBDatabase
         private List<Title> _episodes;
 
         /// <summary>
+        /// Struct for the rating of this Title
+        /// </summary>
+        private Rating _rating;
+
+        /// <summary>
         /// Integer ID of this Title
         /// </summary>
         public int ID { get; }
@@ -30,12 +35,12 @@ namespace IMDBDatabase
         /// <summary>
         /// Number of over all votes on this Title
         /// </summary>
-        public int Votes { get; }
+        public int Votes => _rating.Votes;
 
         /// <summary>
         /// Average score from all votes in this Title
         /// </summary>
-        public float AverageScore { get; }
+        public float AverageScore => _rating.Score;
 
         /// <summary>
         /// Year of start and the year of end of the Title
@@ -66,14 +71,12 @@ namespace IMDBDatabase
         /// Constructor that creates an instance of Title
         /// </summary>
         /// <param name="id">Integer ID that tags the Title.</param>
-        /// <param name="votes">Number of votes on the Title.</param>
-        /// <param name="score">Overall average score of this Title.</param>
+        /// <param name="rating">Overall Rating of this title.</param>
         /// <param name="name">Name of the Title.</param>
         /// <param name="type">Type of this Title, movie, series etc...</param>
         /// <param name="genres">Genres of the Title, Drama, Action etc...</param>
         /// <param name="content">Is the content adult or not</param>
-        /// <param name="year">Years, start and finish, of the Title</param>
-        public Title(int id, int votes, float score, string name,
+        public Title(int id, Rating rating, string name,
             string type, string genres, bool content, params string[] year)
         {
             // Temporary variable to parse years
@@ -88,8 +91,7 @@ namespace IMDBDatabase
 
             // Initialize Variables
             ID = id;
-            Votes = votes;
-            AverageScore = score;
+            _rating = rating;
             Name = name;
             Type = (TitleType)Enum.Parse(typeof(TitleType), type, true);
             Genres = genres.Split(',', ' ', StringSplitOptions.RemoveEmptyEntries);
@@ -97,10 +99,7 @@ namespace IMDBDatabase
             Year = new Tuple<ushort?, ushort?>(startYear, endYear);
 
             // If it's any kind of series, initialize the list of episodes
-            if(Type == (
-				TitleType.TvMiniSeries | 
-				TitleType.TvSeries | 
-				TitleType.TvSpecial))
+            if(Type == (TitleType.TvMiniSeries | TitleType.TvSeries))
                 _episodes = new List<Title>();
         }
 
@@ -110,8 +109,7 @@ namespace IMDBDatabase
         /// <param name="episode">Episode to be added</param>
         public void AddEpisode(Title episode)
         {
-            if (Type == (
-				TitleType.TvMiniSeries | TitleType.TvSeries))
+            if (Type == (TitleType.TvMiniSeries | TitleType.TvSeries))
                 _episodes.Add(episode);
         }
 
