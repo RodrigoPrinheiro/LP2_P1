@@ -18,13 +18,17 @@ namespace IMDBDatabase
 
 		public ConsoleInterface()
 		{
+			OutputEncoding = Encoding.UTF8;
+
 			_rand = new Random();
+
 		}
 
 		public void RenderError(string error)
 		{
 			ForegroundColor = ConsoleColor.Red;
-
+			ShowMsg(error);
+			ForegroundColor = ConsoleColor.White;
 		}
 
 		public void ShowMenu()
