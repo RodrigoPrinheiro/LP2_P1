@@ -14,67 +14,97 @@ namespace IMDBDatabase
 		 *							###	TO-DO ###
 		 * - Try parse for when file not found
 		 * - Try parse for when file could not be uncompressed
-		 * - Return the headers
-		 * - Split stuff using the extracted headers
-		 * - Store everything
 		 * ####################################################################
 		*/
-
-		// tconst	titleType	primaryTitle	originalTitle	isAdult	startYear	endYear		runtimeMinutes	genres
 
 		private const string _NAME_BASICS_FILENAME =	"name.basics.tsv.gz";
 		private const string _TITLE_AKAS_FILENAME =		"title.akas.tsv.gz";
 		private const string _TITLE_BASICS_FILENAME =	"title.basics.tsv.gz";
 		private const string _TITLE_CREW_FILENAME =		"title.crew.tsv.gz";
 		private const string _TITLE_EPISODE_FILENAME =	"title.episode.tsv.gz";
-		private const string _TITLE_PRINCIPALS_FILENAME = "title.principals.tsv.gz";
+		private const string _TITLE_PRINCIPALS_FILENAME ="title.principals.tsv.gz";
 		private const string _TITLE_RATINGS_FILENAME =	"title.ratings.tsv.gz";
 
 		private readonly string _path;
-		private string[] _titleRatings;
+		private IInterface _ui;
+		private Dictionary<int, Rating> _ratingDict;
 
 
 		public DataReader()
 		{
 			Console.OutputEncoding = Encoding.UTF8;
 
+			_ui = new ConsoleInterface();
+			_ratingDict = new Dictionary<int, Rating>();
+
 			_path = Environment.GetFolderPath(
 				Environment.SpecialFolder.LocalApplicationData) +
 				"\\MyIMDBSearcher\\";
-
-			_path += _TITLE_BASICS_FILENAME;
-
 		}
 
 		public void ReadData()
 		{
+			GetRatingInfo();
 			ProcessTitleBasicInfo();
 		}
 
 		private void GetRatingInfo()
 		{
+			string pathToFile = _path + _TITLE_RATINGS_FILENAME;
+			string titleLine;
 
+			_ui.ShowFakeLoadingProcess("Booting bootleg_unity-v.2021.TfRp");
+			using (FileStream fs = new FileStream(
+				pathToFile, FileMode.Open, FileAccess.Read))
+			{
+				_ui.ShowMsg("definetly-unity-v.2021.TfRp booted.", true);
+				Thread.Sleep(400);
+				Console.Clear();
+				_ui.ShowFakeLoadingProcess("Spoofing");
+				using (GZipStream gzs = new GZipStream(
+					fs, CompressionMode.Decompress))
+				{
+					_ui.ShowMsg("Spoofing complete.\n", true);
+					Thread.Sleep(400);
+					Console.Clear();
+					_ui.ShowFakeLoadingProcess("Searching for Honeypot");
+					using (StreamReader sr = new StreamReader(gzs, Encoding.UTF8))
+					{
+						while ((titleLine = sr.ReadLine()) != null)
+						{
+							// Parse line
+							AddRatingTodictionary(titleLine);
+							//Console.ReadKey(true);
+						}
+						_ui.ShowMsg("Honeypot successfully found and avoided.\n",
+							true);
+						Thread.Sleep(400);
+						Console.Clear();
+					}
+				}
+			}
 		}
 
 		private void ProcessTitleBasicInfo()
 		{
+			string pathToFile = _path + _TITLE_BASICS_FILENAME;
 			string titleLine;
 
-			WriteFakeLoadingDots("Searching for firewall breach");
+			_ui.ShowFakeLoadingProcess("Searching for firewall breach");
 			using (FileStream fs = new FileStream(
-				_path, FileMode.Open, FileAccess.Read))
+				pathToFile, FileMode.Open, FileAccess.Read))
 			{
-				Console.WriteLine("Firewall breached.");
+				_ui.ShowMsg("Firewall breached.", true);
 				Thread.Sleep(400);
 				Console.Clear();
-				WriteFakeLoadingDots("Decrypting passwords");
+				_ui.ShowFakeLoadingProcess("Decrypting passwords");
 				using (GZipStream gzs = new GZipStream(
 					fs, CompressionMode.Decompress))
 				{
-					Console.WriteLine("Passwords decrypted.\n");
+					_ui.ShowMsg("Passwords decrypted.\n", true);
 					Thread.Sleep(400);
 					Console.Clear();
-					WriteFakeLoadingDots("Hacking IMDB database");
+					_ui.ShowFakeLoadingProcess("Breaching IMDB database");
 					using (StreamReader sr = new StreamReader(gzs, Encoding.UTF8))
 					{
 						while ((titleLine = sr.ReadLine()) != null)
@@ -83,16 +113,16 @@ namespace IMDBDatabase
 							ParseTitleBasicsLine(titleLine);
 							//Console.ReadKey(true);
 						}
-						Console.WriteLine("Access Granted.\n");
+						_ui.ShowMsg("Access Granted.\n", true);
 						Thread.Sleep(400);
 					}
 				}
 			}
 		}
 
-		private void ParseTitleBasicsLine(string line)
+		private void ParseTitleBasicsLine(string rawLine)
 		{
-			string[] words = line.Split('\t');
+			string[] words = rawLine.Split('\t');
 			if (!words[0].StartsWith("tt")) return;
 
 			int    id =			default;
@@ -109,7 +139,7 @@ namespace IMDBDatabase
 				{ 
 					// Title ID
 					case 0:
-						id = int.Parse(words[i].Substring(2));
+						id = ExtractID(words[i]);
 						break;
 					// Title Type
 					case 1:
@@ -149,21 +179,45 @@ namespace IMDBDatabase
 			//	id, 0, 0, name, type, genres, isAdult, startYear, endYear));
 		}
 
-		private Tuple<int, float> GetScoresFromID(int id)
+		private void AddRatingTodictionary(string rawLine)
 		{
+			string[] words = rawLine.Split('\t');
+			if (!words[0].StartsWith("tt")) return;
 
+			int id =		default;
+			int votes =		default;
+			float average = default;
+
+			for (byte i = 0; i < words.Length; i++)
+			{
+				switch (i)
+				{
+					// Title ID
+					case 0:
+						id = ExtractID(words[i]);
+						break;
+					// Title Average Rating
+					case 1:
+						average = float.Parse(words[i]);
+						break;
+					// Title Votes
+					case 2:
+						votes = int.Parse(words[i]);
+						break;
+				}
+			}
+
+			_ratingDict.Add(id, new Rating(votes, average));
 		}
 
-		private void WriteFakeLoadingDots(string fakeProcess)
+		private Rating GetRatingFromID(int id)
 		{
-			Console.Write(fakeProcess);
-			Thread.Sleep(431);
-			Console.Write(".");
-			Thread.Sleep(327);
-			Console.Write(".");
-			Thread.Sleep(398);
-			Console.WriteLine(".");
-			Thread.Sleep(401);
+			return _ratingDict[id];
 		}
+
+		private int ExtractID(string rawTitleId) =>
+			int.Parse(rawTitleId.Substring(2));
+
+		
 	}
 }
