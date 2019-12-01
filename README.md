@@ -10,7 +10,6 @@
   * Atualização e manutenção do relatório.
   * Criou e geriu as classes e estruturas responsáveis a guardar os sets de dados 
 necessários para criar a base de dados.
-da base de dados.
 
 * #### [Tomás Franco](https://github.com/ThomasFranque) 21803301
     
@@ -34,6 +33,15 @@ mesmo não sendo exatamente a informação em `string` que o ficheiro apresenta.
 * A classe implemente um _composite design pattern_ modificado para o que é
 necessário nesta solução, assim como o _iterator pattern_ para iterar sobre 
 os possíveis episódios se este for uma série.
+
+* O programa ao inicializar vai fazer as seguintes operações antes de deixar o
+utilizador fazer uma pesquisa:
+  1. Ler Ficheiros menos completos
+  2. Guardar informação lida em dicionários adequados com a chave de ID.
+  3. Retirar o resto da informação do ficheiro `title.basics` e preencher
+a classe `Database.cs` com todos os títulos lidos.
+
+ 
 
 ### Diagrama UML
 ![diagrama]
