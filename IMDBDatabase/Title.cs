@@ -23,6 +23,11 @@ namespace IMDBDatabase
         private List<Title> _episodes;
 
         /// <summary>
+        /// Struct for the rating of this Title
+        /// </summary>
+        private Rating _rating;
+
+        /// <summary>
         /// Integer ID of this Title
         /// </summary>
         public int ID { get; }
@@ -30,12 +35,12 @@ namespace IMDBDatabase
         /// <summary>
         /// Number of over all votes on this Title
         /// </summary>
-        public int Votes { get; }
+        public int Votes => _rating.Votes;
 
         /// <summary>
         /// Average score from all votes in this Title
         /// </summary>
-        public float AverageScore { get; }
+        public float AverageScore => _rating.Score;
 
         /// <summary>
         /// Year of start and the year of end of the Title
@@ -86,8 +91,7 @@ namespace IMDBDatabase
 
             // Initialize Variables
             ID = id;
-            Votes = rating.Votes;
-            AverageScore = rating.Score;
+            _rating = rating;
             Name = name;
             Type = (TitleType)Enum.Parse(typeof(TitleType), type, true);
             Genres = genres.Split(',', ' ', StringSplitOptions.RemoveEmptyEntries);
