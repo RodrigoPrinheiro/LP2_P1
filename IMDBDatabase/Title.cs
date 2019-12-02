@@ -77,6 +77,10 @@ namespace IMDBDatabase
         /// </summary>
         public Title ParentTitle { get => _parentTitle; }
 
+        public byte? Season { get; set; }
+        public short? EpisodeNumber { get; set; }
+
+
         /// <summary>
         /// Constructor that creates an instance of Title
         /// </summary>
@@ -114,7 +118,7 @@ namespace IMDBDatabase
         /// episode parent Title reference.
         /// </summary>
         /// <param name="episode">Episode to be added to this Title</param>
-        public void AddEpisode(Title episode)
+        public void AddEpisode(Title episode, byte? season, short? number)
         {
             // Only creates a list if this title needs an episode list.
             if (_episodes == null) _episodes = new List<Title>();
@@ -122,6 +126,8 @@ namespace IMDBDatabase
             _episodes?.Add(episode);
             // Sets parent
             episode.SetParent(this);
+            episode.Season = season;
+            episode.EpisodeNumber = number;
         }
 
         /// <summary>
