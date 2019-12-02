@@ -12,9 +12,11 @@ namespace IMDBDatabase
 
 		private static void ThomasDebug(string[] args)
 		{
-			DataReader dr = new DataReader();
+			IInterface ui = new ConsoleInterface();
 
-			dr.ReadData();
+			Database db = new Database();
+
+			ui.ShowSearchResult(db.SearchName("The Force Awa"));
 		}
 	}
 }
