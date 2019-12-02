@@ -9,5 +9,6 @@ namespace IMDBDatabase
 		void RenderError(string error);
 		void ShowMsg(string msg, bool slowWrite = false);
 		void ShowFakeLoadingProcess(string fakeProcess);
+		void WaitForMilliseconds(int millisecs);
 	}
 }

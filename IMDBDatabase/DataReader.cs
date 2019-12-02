@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
-using System.Threading;
 
 namespace IMDBDatabase
 {
@@ -109,7 +108,7 @@ namespace IMDBDatabase
 				pathToFile, FileMode.Open, FileAccess.Read))
 			{
 				_ui.ShowMsg("definetly-unity-v.2021.TfRp booted.", true);
-				Thread.Sleep(400);
+				_ui.WaitForMilliseconds(400);
 				Console.Clear();
 				_ui.ShowFakeLoadingProcess("Spoofing");
 				// Uncompress file
@@ -117,7 +116,7 @@ namespace IMDBDatabase
 					fs, CompressionMode.Decompress))
 				{
 					_ui.ShowMsg("Spoofing complete.\n", true);
-					Thread.Sleep(400);
+					_ui.WaitForMilliseconds(400);
 					Console.Clear();
 					_ui.ShowFakeLoadingProcess("Searching for Honeypot");
 					// Read file
@@ -131,7 +130,7 @@ namespace IMDBDatabase
 						}
 						_ui.ShowMsg("Honeypot successfully found and avoided.\n",
 							true);
-						Thread.Sleep(400);
+						_ui.WaitForMilliseconds(400);
 						Console.Clear();
 					}
 				}
@@ -152,7 +151,7 @@ namespace IMDBDatabase
 				pathToFile, FileMode.Open, FileAccess.Read))
 			{
 				_ui.ShowMsg("Firewall breached.", true);
-				Thread.Sleep(400);
+				_ui.WaitForMilliseconds(400);
 				Console.Clear();
 				_ui.ShowFakeLoadingProcess("Decrypting passwords");
 				// Uncompress file
@@ -160,7 +159,7 @@ namespace IMDBDatabase
 					fs, CompressionMode.Decompress))
 				{
 					_ui.ShowMsg("Passwords decrypted.\n", true);
-					Thread.Sleep(400);
+					_ui.WaitForMilliseconds(400);
 					Console.Clear();
 					_ui.ShowFakeLoadingProcess("Breaching IMDB database");
 					// Read file
@@ -173,7 +172,7 @@ namespace IMDBDatabase
 							ParseTitleBasicsLine(titleLine);
 						}
 						_ui.ShowMsg("Access Granted.\n", true);
-						Thread.Sleep(400);
+						_ui.WaitForMilliseconds(400);
 					}
 				}
 			}

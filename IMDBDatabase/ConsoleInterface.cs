@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Text;
@@ -81,6 +80,36 @@ namespace IMDBDatabase
 					_MAX_RANDOM_SLOW_WRITE_TIME));
 			}
 			CursorVisible = true;
+		}
+
+		void IInterface.ShowMenu()
+		{
+			throw new NotImplementedException();
+		}
+
+		void IInterface.ShowSearchResult(IEnumerable<Title> results)
+		{
+			throw new NotImplementedException();
+		}
+
+		void IInterface.RenderError(string error)
+		{
+			throw new NotImplementedException();
+		}
+
+		void IInterface.ShowMsg(string msg, bool slowWrite)
+		{
+			throw new NotImplementedException();
+		}
+
+		void IInterface.ShowFakeLoadingProcess(string fakeProcess)
+		{
+			throw new NotImplementedException();
+		}
+
+		void IInterface.WaitForMilliseconds(int millisecs)
+		{
+			Thread.Sleep(millisecs);
 		}
 	}
 }
