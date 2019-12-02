@@ -10,7 +10,9 @@ namespace IMDBDatabase
 
         public Database()
         {
-            _titles = new List<Title>();
+			DataReader dr = new DataReader();
+
+            _titles = dr.ReadData();
         }
 
         public void AddTitle(Title title)
