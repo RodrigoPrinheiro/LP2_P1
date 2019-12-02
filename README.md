@@ -17,6 +17,9 @@ necessários para criar a base de dados.
   * Criou as classes responsáveis por ler os ficheiros e cortar as `string` lidas
 devidamente, preparando-as para guardar na base de dados.
 
+* Na vizualização dos _commits_ realizados pelo grupo à de ter em atenção o
+tamanho da Doxyfile.
+
 ## Arquitetura da solução
 
 ### Descrição da solução
