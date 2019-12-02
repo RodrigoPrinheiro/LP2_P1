@@ -18,14 +18,14 @@ namespace IMDBDatabase
     public class Title : IEnumerable<Title>, IComparable<Title>, IHasID
     {
         /// <summary>
-        /// List of episodes if the title is a TvSeries
+        /// Collection for all the episodes assign to this Title
         /// </summary>
-        private List<Title> _episodes;
+        private ICollection<Title> _episodes;
 
         /// <summary>
-        /// Struct for the rating of this Title
+        /// Parent Title for when this title is an episode;
         /// </summary>
-        private Rating _rating;
+        private Title _parentTitle;
 
         /// <summary>
         /// Integer ID of this Title
@@ -33,14 +33,19 @@ namespace IMDBDatabase
         public int ID { get; }
 
         /// <summary>
+        /// Struct for the rating of this Title
+        /// </summary>
+        private Rating _rating;
+        
+        /// <summary>
         /// Number of over all votes on this Title
         /// </summary>
-        public int Votes => _rating.Votes;
+        public int Votes { get => _rating.Votes; }
 
         /// <summary>
         /// Average score from all votes in this Title
         /// </summary>
-        public float AverageScore => _rating.Score;
+        public float AverageScore { get => _rating.Score; }
 
         /// <summary>
         /// Year of start and the year of end of the Title
@@ -68,6 +73,11 @@ namespace IMDBDatabase
         public bool AdultContent { get; }
 
         /// <summary>
+        /// Get only property for the parent Title for this Title
+        /// </summary>
+        public Title ParentTitle { get => _parentTitle; }
+
+        /// <summary>
         /// Constructor that creates an instance of Title
         /// </summary>
         /// <param name="id">Integer ID that tags the Title.</param>
@@ -81,7 +91,7 @@ namespace IMDBDatabase
         {
             // Temporary variable to parse years
             ushort i;
-            // Nullable integers so we can have null years in case of a movie etc...
+            // Null-able integers so we can have null years in case of a movie etc...
             ushort? startYear = null;
             ushort? endYear = null;
 
@@ -97,39 +107,44 @@ namespace IMDBDatabase
             Genres = genres.Split(',', ' ', StringSplitOptions.RemoveEmptyEntries);
             AdultContent = content;
             Year = new Tuple<ushort?, ushort?>(startYear, endYear);
-
-            // If it's any kind of series, initialize the list of episodes
-            if(Type == (TitleType.TvMiniSeries | TitleType.TvSeries))
-                _episodes = new List<Title>();
         }
 
         /// <summary>
-        /// Adds a new episode to the list for this series.
+        /// Adds an episode Title to this Title and adds this Title to the
+        /// episode parent Title reference.
         /// </summary>
-        /// <param name="episode">Episode to be added</param>
+        /// <param name="episode">Episode to be added to this Title</param>
         public void AddEpisode(Title episode)
         {
-            if (Type == (TitleType.TvMiniSeries | TitleType.TvSeries))
-                _episodes.Add(episode);
+            // Only creates a list if this title needs an episode list.
+            if (_episodes == null) _episodes = new List<Title>();
+            // Ads the title
+            _episodes?.Add(episode);
+            // Sets parent
+            episode.SetParent(this);
         }
 
-        public IEnumerator<Title> GetEnumerator()
+        /// <summary>
+        /// Sets current Title parent Title.
+        /// </summary>
+        /// <param name="parent">Parent Title</param>
+        public void SetParent(Title parent) => _parentTitle = parent;
+
+        public int CompareTo(Title other)
         {
-            return GetEnumerator();
+            return Comparer<float>.Default.
+                Compare(other?.AverageScore ?? 0f, AverageScore);
         }
 
+        public IEnumerator<Title> GetEnumerator() => GetEnumerator();
+
+        // Return all children from this title
         IEnumerator IEnumerable.GetEnumerator()
         {
             foreach (Title ep in _episodes)
             {
                 yield return ep;
             }
-        }
-
-        public int CompareTo(Title other)
-        {
-            return Comparer<float>.Default.
-                Compare(other?.AverageScore ?? 0f, AverageScore);
         }
     }
 }
