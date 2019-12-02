@@ -52,7 +52,8 @@ namespace IMDBDatabase
         public IEnumerable<Title> SearchGenres(params string[] genres)
         {
             IEnumerable<Title> intersectedGenreTitles;
-            intersectedGenreTitles = _titles.Where(x => x?.Genres[0].Contains(genres[0], StringComparison.CurrentCultureIgnoreCase) ?? false);
+            intersectedGenreTitles = _titles.
+                Where(x => x?.Genres[0].ToLower().Contains(genres[0]) ?? false);
 
             if(genres.Length > 1)
                 for (int i = 1; i < genres.Length; i++)
