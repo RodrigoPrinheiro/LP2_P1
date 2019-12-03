@@ -14,9 +14,36 @@ namespace IMDBDatabase
 		{
 			IInterface ui = new ConsoleInterface();
 
-			Database db = new Database();
+			string[] strings = new string[]
+			{
+				"AAAAAA\ttrue\thello\tyes\tno\tleles",
+				"AAAAAA\ttrue\thello\tyes\tno\tleles",
+				"AAAAAA\ttrue\thello\tyes\tno\tleles",
+				"AAAAAA\ttrue\thello\tyes\tno\tleles",
+				"AAAAAA\ttrue\thello\tyes\tno\tleles",
+				"AAAAAA\ttrue\thello\tyes\tno\tleles",
+				"AAAAAA\ttrue\thello\tyes\tno\tleles",
+				"AAAAAA\ttrue\thello\tyes\tno\tleles",
+				"AAAAAA\ttrue\thello\tyes\tno\tleles",
+				"AAAAAA\ttrue\thello\tyes\tno\tleles",
+				"AAAAAA\ttrue\thello\tyes\tno\tleles",
+				"AAAAAA\ttrue\thello\tyes\tno\tleles",
+				"AAAAAA\ttrue\thello\tyes\tno\tleles",
+				"AAAAAA\ttrue\thello\tyes\tno\tleles",
+				"AAAAAA\ttrue\thello\tyes\tno\tleles",
+				"AAAAAA\ttrue\thello\tyes\tno\tleles",
+				"AAAAAA\ttrue\thello\tyes\tno\tleles",
+				"AAAAAA\ttrue\thello\tyes\tno\tleles",
+				"AAAAAA\ttrue\thello\tyes\tno\tleles\taaaaaaa",
+			};
 
-			ui.ShowSearchResult(db.SearchName("The Force Awa"));
+			ui.ShowMenu();
+			ui.ShowSearchResult(strings);
+
+			Console.ReadKey();
+			//Database db = new Database();
+
+			//ui.ShowSearchResult(db.SearchName("The Force Awa"));
 		}
 	}
 }
