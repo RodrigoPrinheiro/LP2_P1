@@ -11,10 +11,16 @@ namespace IMDBDatabase
 		private const byte _CONSOLE_WINDOW_WIDTH = 110;
 		private const byte _CONSOLE_WINDOW_HEIGHT = 40;
 
-		private const byte _MIN_RANDOM_SLOW_WRITE_TIME = 10;
-		private const byte _MAX_RANDOM_SLOW_WRITE_TIME = 60;
+		private const byte _MIN_RANDOM_SLOW_WRITE_TIME = 4;
+		private const byte _MAX_RANDOM_SLOW_WRITE_TIME = 15;
 		private const byte _MIN_RANDOM_DOT_WRITE_TIME = 200;
 		private const int  _MAX_RANDOM_DOT_WRITE_TIME = 380;
+
+		private const byte _MAX_TITLE_NAME_DISPLAY_CHARS = 82;
+		private const byte _MAX_SEARCH_RESULT_DISPLAY_TITLES = 10;
+
+		private const string _NAME_HEADER = "     TITLE_NAME     ";
+		private const string _TYPE_HEADER = "    TYPE    ";
 
 		private const ConsoleColor  _DEFAULT_FG_COLOR = ConsoleColor.White;
 		private const ConsoleColor  _DEFAULT_BG_COLOR = ConsoleColor.Black;
@@ -31,7 +37,7 @@ namespace IMDBDatabase
 
 			ForegroundColor = _DEFAULT_FG_COLOR;
 
-			Console.SetWindowSize(_CONSOLE_WINDOW_WIDTH, _CONSOLE_WINDOW_HEIGHT);
+			SetWindowSize(_CONSOLE_WINDOW_WIDTH, _CONSOLE_WINDOW_HEIGHT);
 		}
 
 		public void RenderError(string error)
@@ -57,50 +63,89 @@ namespace IMDBDatabase
 				Write(msg);
 		}
 
-		//public void ShowSearchResult(IEnumerable<Title> results)
-		//{
-		//	RenderSolidBackgroundBlock(
-		//		ConsoleColor.DarkYellow,
-		//		new int[] { 40, 25 },
-		//		new int[2] { 45, 55 });
-
-		//	foreach (Title t in results)
-		//	{
-		//		SlowWrite(t.Name);
-		//		//t.ToString();
-		//	}
-		//}
-
-		// DEBUG VVV
-		public void ShowSearchResult(string[] strings)
+		public void ShowSearchResult(IReadable[] results)
 		{
-			int headerTopPosition = 11;
-			int headerLeftPosition = 6;
+			byte headerTopPosition = 11;
+			byte headerLeftPosition = 6;
+			byte typeXPos = (byte)(headerLeftPosition + 85);
+
 			int yIndex = 1;
+			int resultLengh = results.Length;
 
-			string header = "" +
-				"ID	NAME				AVERAGE_RATING	VOTES	TYPE	GENRES		ADULT";
+			RenderSearchResultTable(
+				headerTopPosition, headerLeftPosition, typeXPos,
+				resultLengh, 1, 10);
 
-			// Draw yellow
-			RenderSolidBackgroundBlock(
-				ConsoleColor.DarkYellow,
-				new int[2] { headerTopPosition - 1, headerLeftPosition - 1 },
-				new int[2] { 35, 105 });
-			// Make hole
-			RenderSolidBackgroundBlock(
-				ConsoleColor.Black,
-				new int[2] { headerTopPosition + 2, headerLeftPosition},
-				new int[2] { 33, 104 });
-			SetCursorPosition(headerLeftPosition, headerTopPosition);
-			Write(header);
-
-
-			foreach (string title in strings)
+			// Write results
+			string resultBasicInfo = null;
+			byte resultAmmount = 0;
+			for (int i = 0; i < results.Length; i++)
 			{
-				SetCursorPosition(
-					headerLeftPosition, headerTopPosition + ++yIndex);
+				// Get info
+				resultBasicInfo = results[i].GetBasicInfo();
+				string[] splitBasicInfo = resultBasicInfo.Split('\t');
 
-				Write("696969	Wild Mr. Mozby Dreams		5.0           	180	TVSeries action/adventure X");
+				// Write title name
+				int currentCharNum = 0;
+
+				SetCursorPosition(headerLeftPosition, headerTopPosition + ++yIndex);
+
+				foreach (char letter in splitBasicInfo[0])
+				{
+					if (currentCharNum >= _MAX_TITLE_NAME_DISPLAY_CHARS)
+						break;
+
+					Write(letter);
+					currentCharNum++;
+				}
+
+				// Write type info
+				SetCursorPosition(left: typeXPos);
+				Write(splitBasicInfo[1]);
+
+				yIndex++;
+				resultAmmount++;
+
+				// Max result ammount reached
+				if (resultAmmount % _MAX_SEARCH_RESULT_DISPLAY_TITLES == 0)
+				{
+					// WAIT FOR USER INPUT METHOD
+					// 
+					switch (WaitForAnyUserKeyPress())
+					{
+						case ConsoleKey.LeftArrow:
+							yIndex = 1;
+							resultAmmount = 0;
+							if (i - _MAX_SEARCH_RESULT_DISPLAY_TITLES > -1)
+								i -= _MAX_SEARCH_RESULT_DISPLAY_TITLES * 2;
+							else
+								i = -1;
+
+							UpdateResultViewport(
+								headerTopPosition, headerLeftPosition, typeXPos,
+							resultLengh, i, i + _MAX_SEARCH_RESULT_DISPLAY_TITLES);
+
+							break;
+						case ConsoleKey.RightArrow:
+							resultAmmount = 0;
+							yIndex = 1;
+
+							if (i + _MAX_SEARCH_RESULT_DISPLAY_TITLES > results.Length)
+								i -= _MAX_SEARCH_RESULT_DISPLAY_TITLES;
+
+								UpdateResultViewport(
+									headerTopPosition, headerLeftPosition, typeXPos,
+								resultLengh, i, i + _MAX_SEARCH_RESULT_DISPLAY_TITLES);
+
+							break;
+						case ConsoleKey.UpArrow:
+							break;
+						case ConsoleKey.DownArrow:
+							break;
+						case ConsoleKey.Backspace:
+							break;
+					};
+				}
 			}
 
 		}
@@ -123,7 +168,7 @@ namespace IMDBDatabase
 				_MAX_RANDOM_DOT_WRITE_TIME));
 		}
 
-		public char WaitForAnyUserKeyPress() => ReadKey().KeyChar;
+		public ConsoleKey WaitForAnyUserKeyPress() => ReadKey().Key;
 
 		public string WaitForUserTextInput()=> ReadLine();
 
@@ -165,6 +210,58 @@ namespace IMDBDatabase
 			BackgroundColor = _DEFAULT_BG_COLOR;
 			
 			WriteLine();
+		}
+
+		private void RenderSearchResultTable(
+			byte headerTopPosition, byte headerLeftPosition, byte typeXPos,
+			int lengh, int currentMinI, int maxCurrentI)
+		{
+			// Draw yellow
+			RenderSolidBackgroundBlock(
+				ConsoleColor.DarkYellow,
+				new int[2] { headerTopPosition - 1, headerLeftPosition - 1 },
+				new int[2] { 35, 105 });
+
+			// Write headers
+			SetCursorPosition(headerLeftPosition, headerTopPosition);
+			Write(_NAME_HEADER);
+			SetCursorPosition(typeXPos, headerTopPosition);
+			Write(_TYPE_HEADER);
+
+			// Make hole
+			UpdateResultViewport(headerTopPosition, headerLeftPosition, typeXPos,
+				lengh,currentMinI, maxCurrentI);
+		}
+
+		private void UpdateResultViewport(
+			byte headerTopPosition, byte headerLeftPosition, byte typeXPos,
+			int lengh, int currentMinI, int maxCurrentI)
+		{
+			// Make hole
+			RenderSolidBackgroundBlock(
+				ConsoleColor.Black,
+				new int[2] { headerTopPosition + 2, headerLeftPosition },
+				new int[2] { 33, 104 });
+
+			// Make Bar
+			RenderSolidBackgroundBlock(
+				ConsoleColor.DarkYellow,
+				new int[2] { headerTopPosition + 2, typeXPos - 2 },
+				new int[2] { 35, typeXPos - 1 });
+
+			// Make page section
+			RenderSolidBackgroundBlock(
+				ConsoleColor.DarkYellow,
+				new int[2] { headerTopPosition - 2, headerLeftPosition},
+				new int[2] { headerTopPosition, headerLeftPosition + 98 });
+
+			SetCursorPosition(headerLeftPosition + 1, headerTopPosition - 2);
+			BackgroundColor = ConsoleColor.DarkYellow;
+			ForegroundColor = ConsoleColor.Black;
+			Write($"Seeing: {currentMinI}-{maxCurrentI} of {lengh} search results");
+			BackgroundColor = _DEFAULT_BG_COLOR;
+			ForegroundColor = _DEFAULT_FG_COLOR;
+
 		}
 
 		private void SetCursorPosition(int? left = null, int? top = null)

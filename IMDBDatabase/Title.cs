@@ -15,7 +15,7 @@ namespace IMDBDatabase
     /// Class representing a dataset for a Title of the IMDB database.
     /// Movies, series, shorts, video games etc...
     /// </summary>
-    public class Title : IEnumerable<Title>, IComparable<Title>, IHasID
+    public class Title : IEnumerable<Title>, IComparable<Title>, IHasID, IReadable
     {
         /// <summary>
         /// Collection for all the episodes assign to this Title
@@ -152,5 +152,15 @@ namespace IMDBDatabase
                 yield return ep;
             }
         }
-    }
+
+		public string GetBasicInfo()
+		{
+			return $"{Name}\t{Type}";
+		}
+
+		public string GetDetailedInfo()
+		{
+			return null;
+		}
+	}
 }

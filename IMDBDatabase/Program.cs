@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace IMDBDatabase
@@ -14,36 +15,21 @@ namespace IMDBDatabase
 		{
 			IInterface ui = new ConsoleInterface();
 
-			string[] strings = new string[]
-			{
-				"AAAAAA\ttrue\thello\tyes\tno\tleles",
-				"AAAAAA\ttrue\thello\tyes\tno\tleles",
-				"AAAAAA\ttrue\thello\tyes\tno\tleles",
-				"AAAAAA\ttrue\thello\tyes\tno\tleles",
-				"AAAAAA\ttrue\thello\tyes\tno\tleles",
-				"AAAAAA\ttrue\thello\tyes\tno\tleles",
-				"AAAAAA\ttrue\thello\tyes\tno\tleles",
-				"AAAAAA\ttrue\thello\tyes\tno\tleles",
-				"AAAAAA\ttrue\thello\tyes\tno\tleles",
-				"AAAAAA\ttrue\thello\tyes\tno\tleles",
-				"AAAAAA\ttrue\thello\tyes\tno\tleles",
-				"AAAAAA\ttrue\thello\tyes\tno\tleles",
-				"AAAAAA\ttrue\thello\tyes\tno\tleles",
-				"AAAAAA\ttrue\thello\tyes\tno\tleles",
-				"AAAAAA\ttrue\thello\tyes\tno\tleles",
-				"AAAAAA\ttrue\thello\tyes\tno\tleles",
-				"AAAAAA\ttrue\thello\tyes\tno\tleles",
-				"AAAAAA\ttrue\thello\tyes\tno\tleles",
-				"AAAAAA\ttrue\thello\tyes\tno\tleles\taaaaaaa",
-			};
-
-			ui.ShowMenu();
-			ui.ShowSearchResult(strings);
-
-			Console.ReadKey();
 			//Database db = new Database();
 
-			//ui.ShowSearchResult(db.SearchName("The Force Awa"));
+
+			IReadable[] readable= new IReadable[10];
+
+			for (int i = 0; i < 10; i++)
+				readable[i] = (new Title(999999, new Rating(430, 4.2f),
+					"This is a debug movie titleeafeeeffawfefjkhgfjhwgjwgefjhksdbvhjgfbgv;ljfdvndfbsghkfdbgka;dgdbfs;dfgdfjb"
+					, "TvMiniSeries", "Action, Adventure", true, "1970", "1970"));
+
+			ui.ShowMenu();
+			ui.ShowSearchResult(readable);
+			//ui.ShowSearchResult(db.SearchName("Alien"));
+
+			Console.ReadKey();
 		}
 	}
 }
