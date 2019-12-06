@@ -16,7 +16,7 @@ namespace IMDBDatabase
 
 			Database db = new Database();
 
-			ui.ShowSearchResult(db.SearchName("The Force Awa"));
+			ui.ShowSearchResult(db.SearchName("baguette"));
 		}
 	}
 }

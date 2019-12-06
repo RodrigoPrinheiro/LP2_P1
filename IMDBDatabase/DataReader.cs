@@ -11,6 +11,7 @@ using System.IO.Compression;
 using System.Collections.Generic;
 using System.Threading;
 using System.Text;
+using System.Linq;
 
 namespace IMDBDatabase
 {
@@ -69,10 +70,12 @@ namespace IMDBDatabase
 		/// </summary>
 		private Dictionary<int, Rating> _ratingDict;
 
+        private Dictionary<int, ICollection<Title>> _episodeDict;
+
 		/// <summary>
 		/// List containing titles
 		/// </summary>
-		private List<Title> _titleInfo;
+		private Dictionary<int, Title> _titleInfo;
 
 		/// <summary>
 		/// Constructor that initializes instance variables.
@@ -81,6 +84,7 @@ namespace IMDBDatabase
 		{
 			_ui = new ConsoleInterface();
 			_ratingDict = new Dictionary<int, Rating>();
+            _episodeDict = new Dictionary<int, ICollection<Title>>();
 
 			_path = Environment.GetFolderPath(
 				Environment.SpecialFolder.LocalApplicationData) +
@@ -105,13 +109,16 @@ namespace IMDBDatabase
 				_titleAmmount++;
 
 				// Initialize title list with predetermined ammount of titles
-				_titleInfo = new List<Title>(_titleAmmount);
+				_titleInfo = new Dictionary<int, Title>(_titleAmmount);
 
 				// Get titles into list
 				ReadFromFile(_TITLE_BASICS_FILENAME, AddTitleBasicsLineToList);
 
+                // Get titles episodes into list
+                ReadFromFile(_TITLE_EPISODE_FILENAME, AddEpisodeToTitle);
+
 				// Return fill title info
-				return _titleInfo;
+				return _titleInfo.Values.ToList();
 			} 
 			// If a file is not found
 			catch (FileNotFoundException e)
@@ -250,26 +257,75 @@ namespace IMDBDatabase
 
 			Rating rating = GetRatingFromID(id);
 
-			// Pass the info
-			_titleInfo.Add(new Title(
+			// Pass the info, ID is the key to the dic
+			_titleInfo.Add(id ,new Title(
 				id, rating, name, type, genres,
 					isAdult, startYear, endYear));
 		}
 
-		/// <summary>
-		/// Process raw data line into the ratings dictionary.
-		/// </summary>
-		/// <param name="rawLine">Raw data line.</param>
-		private void AddRatingTodictionary(string rawLine)
-		{
-			// Split into words
-			string[] words = rawLine.Split('\t');
-			// Check if it is not a header
-			if (!words[0].StartsWith("tt")) return;
+        private void AddEpisodeToTitle(string rawLine)
+        {
+            // episodetconst   parenttconst     season    number
 
-			int id =		default;
-			int votes =		default;
-			float average = default;
+            string[] words = rawLine.Split('\t');
+
+            if (!words[0].StartsWith("tt")) return;
+            
+            // Variables to save each required part for the episodes
+            int id = default;
+            int parentID = default;
+            byte? seasonNumber = default;
+            short? episodeNumber = default;
+
+            // save episode ID
+            id = ExtractID(words[0]);
+            parentID = ExtractID(words[1]);
+
+            // Get season number in a null-able byte
+            seasonNumber = byte.TryParse(words[2], out byte bResult)
+                ? (byte?)bResult : null;
+
+            episodeNumber = short.TryParse(words[3], out short sResult)
+                ? (short?)sResult : null;
+
+            // If it contains the parent then add it to the parent's episode list
+            if (_episodeDict.ContainsKey(parentID))
+            {
+                _episodeDict[parentID].Add(_titleInfo[id]);
+                _titleInfo[parentID].AddEpisode(
+                    _titleInfo[id], 
+                    seasonNumber, 
+                    episodeNumber);
+            }
+            else
+            {
+                // Create a new list in key value
+                _episodeDict.Add(parentID, new List<Title>());
+                _episodeDict[parentID].Add(_titleInfo[id]);
+
+                // Add title to corresponding parent as an episode
+                _episodeDict[parentID].Add(_titleInfo[id]);
+                _titleInfo[parentID].AddEpisode(
+                    _titleInfo[id],
+                    seasonNumber,
+                    episodeNumber);
+            }
+        }
+
+        /// <summary>
+        /// Process raw data line into the ratings dictionary.
+        /// </summary>
+        /// <param name="rawLine">Raw data line.</param>
+        private void AddRatingTodictionary(string rawLine)
+        {
+            // Split into words
+            string[] words = rawLine.Split('\t');
+            // Check if it is not a header
+            if (!words[0].StartsWith("tt")) return;
+
+            int id = default;
+            int votes = default;
+            float average = default;
 
 			// Run through all of the words, respectively parsing info
 			for (byte i = 0; i < words.Length; i++)
