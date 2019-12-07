@@ -20,12 +20,13 @@ namespace IMDBDatabase
             _titles.Add(title);
         }
 
-        public IEnumerable<Title> SearchType(string type)
+        public IReadable[] SearchType(string type)
         {
             TitleType search = (TitleType)Enum.Parse
                 (typeof(TitleType), type, true);
 
-            return _titles.Where(x => x.Type == search);
+            return _titles.Where(x => x.Type == search).ToArray()
+                as IReadable[];
         }
 
         public IReadable[] SearchName(string nameContent)

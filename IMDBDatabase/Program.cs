@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Linq;
 
 namespace IMDBDatabase
 {
@@ -14,29 +11,17 @@ namespace IMDBDatabase
 
 		private static void ThomasDebug(string[] args)
 		{
-			IInterface ui = new ConsoleInterface();
-
-			//Database db = new Database();
-
-<<<<<<< HEAD
-            ui.ShowMsg("Number of TvSeries: " 
-                + db.SearchType("tvseries").Count().ToString());
-=======
-
-			IReadable[] readable= new IReadable[56];
-
-			for (int i = 0; i < 56; i++)
-				if (i % 2 == 0)
-					readable[i] = (new Title(999999, new Rating(430, 4.2f),
-						"This is a debug movie titleeafeeeffawfefjkhgfjhwgjwgefjhksdbvhjgfbgv;ljfdvndfbsghkfdbgka;dgdbfs;dfgdfjb", 
-						"TvMiniSeries", "Action, Adventure", true, "1970", "1970"));
-				else 
-					readable[i] = (new Title(999999, new Rating(430, 4.2f),
-					 "234523452523452352345", "TvMiniSeries", "Action, Adventure", true, "1970", "1970"));
-
-			ui.ShowTitleSearchResult(readable);
-			//ui.ShowSearchResult(db.SearchName("Alien"));
->>>>>>> thomasUI
+			ConsoleInterface ui = new ConsoleInterface();
+            IReadable info = new Title(202, new Rating(2, 4.2f)
+                , "Fromage",
+                "tvSeries",
+                "Action, Drama, Fantasy",
+                false,
+                "2102", "");
+			Database db = new Database();
+            ui.ShowTitleSearchResult(db.SearchName("Star wars"));
+            //ui.ShowDetailedTitleInfo(info);
+            Console.ReadKey();
 		}
 	}
 }

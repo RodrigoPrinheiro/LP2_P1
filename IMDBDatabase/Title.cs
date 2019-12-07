@@ -8,6 +8,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 namespace IMDBDatabase
 {
@@ -160,7 +161,30 @@ namespace IMDBDatabase
 
 		public string GetDetailedInfo()
 		{
-			return null;
+            string adultContent = AdultContent ? "Yes" : "No";
+            string yearOne;
+            string yearTwo;
+            StringBuilder info = new StringBuilder();
+
+            // Append name, type, content and ratings
+            info.Append(Name + "\t");
+            info.Append(Type + "\t");
+            info.Append(adultContent + "\t");
+            info.Append(_rating.Score + "\t");
+            info.Append(_rating.Votes + "\t");
+
+            // Sort year by null
+            yearOne = Year.Item1 == null ? @"\N" : Year.Item1.ToString();
+            yearTwo = Year.Item2 == null ? @"\N" : Year.Item2.ToString();
+            // Append Year
+            info.Append(yearOne + "\t");
+            info.Append(yearTwo + "\t");
+            // Append Genres
+            foreach (string s in Genres)
+                info.Append($"{s} ");
+
+            // Return created string
+            return info.ToString();
 		}
 	}
 }
