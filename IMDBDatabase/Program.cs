@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Linq;
 
 namespace IMDBDatabase
 {
@@ -12,9 +13,12 @@ namespace IMDBDatabase
 
 		private static void ThomasDebug(string[] args)
 		{
-			DataReader dr = new DataReader();
+			IInterface ui = new ConsoleInterface();
 
-			dr.ReadData();
+			Database db = new Database();
+
+            ui.ShowMsg("Number of TvSeries: " 
+                + db.SearchType("tvseries").Count().ToString());
 		}
 	}
 }

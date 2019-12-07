@@ -9,8 +9,8 @@ namespace IMDBDatabase
 {
 	public class ConsoleInterface : IInterface
 	{
-		private const byte _MIN_RANDOM_SLOW_WRITE_TIME = 10;
-		private const byte _MAX_RANDOM_SLOW_WRITE_TIME = 60;
+		private const byte _MIN_RANDOM_SLOW_WRITE_TIME = 2;
+		private const byte _MAX_RANDOM_SLOW_WRITE_TIME = 20;
 		private const byte _MIN_RANDOM_DOT_WRITE_TIME = 200;
 		private const int  _MAX_RANDOM_DOT_WRITE_TIME = 380;
 
@@ -48,7 +48,8 @@ namespace IMDBDatabase
 		{
 			foreach(Title t in results)
 			{
-				t.ToString();
+				SlowWrite(t.Name);
+				//t.ToString();
 			}
 		}
 
