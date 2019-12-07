@@ -168,20 +168,23 @@ namespace IMDBDatabase
 					_ui.ShowMsg("Uncompressing successful.\n\n", true);
 					Thread.Sleep(200);
 					Console.Clear();
-					// Read file
-					_ui.ShowFakeLoadingProcess("Reading data");
-					using (StreamReader sr = new StreamReader(gzs, Encoding.UTF8))
-					{
-						// Run through all of the raw text data
-						while ((titleLine = sr.ReadLine()) != null)
-						{
-							// Invoke action
-							lineAction.Invoke(titleLine);
-						}
-						_ui.ShowMsg("Data read.\n", true);
-						Thread.Sleep(200);
-						Console.Clear();
-					}
+                    // Read file
+                    using (BufferedStream bs = new BufferedStream(gzs))
+                    {
+                        _ui.ShowFakeLoadingProcess("Reading data");
+                        using (StreamReader sr = new StreamReader(bs, Encoding.UTF8))
+                        {
+                            // Run through all of the raw text data
+                            while ((titleLine = sr.ReadLine()) != null)
+                            {
+                                // Invoke action
+                                lineAction.Invoke(titleLine);
+                            }
+                            _ui.ShowMsg("Data read.\n", true);
+                            Thread.Sleep(200);
+                            Console.Clear();
+                        }
+                    }
 				}
 			}
 		}
@@ -298,7 +301,7 @@ namespace IMDBDatabase
                     seasonNumber, 
                     episodeNumber);
             }
-            else if (_titleInfo.ContainsKey(parentID))
+            else if (_titleInfo.ContainsKey(parentID) && !_episodeDict.ContainsKey(parentID))
             {
                 // Create a new list in key value
                 _episodeDict.Add(parentID, new List<Title>());
