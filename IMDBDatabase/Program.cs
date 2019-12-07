@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Linq;
 
 namespace IMDBDatabase
 {
@@ -16,7 +17,8 @@ namespace IMDBDatabase
 
 			Database db = new Database();
 
-			ui.ShowSearchResult(db.SearchName("baguette"));
+            ui.ShowMsg("Number of TvSeries: " 
+                + db.SearchType("tvseries").Count().ToString());
 		}
 	}
 }

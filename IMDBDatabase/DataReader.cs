@@ -136,7 +136,8 @@ namespace IMDBDatabase
 			finally
 			{
 				_ui.ShowMsg($"\nList size is: {_titleAmmount}", true);
-				_ui.ShowMsg("\nFile reading successfull.\n", true);
+                _ui.ShowMsg($"\nEpisodes list size is: {_episodeDict.Count}", true);
+				_ui.ShowMsg("\nFile reading successful.\n", true);
 			}
 		}
 		
@@ -164,7 +165,7 @@ namespace IMDBDatabase
 				using (GZipStream gzs = new GZipStream(
 					fs, CompressionMode.Decompress))
 				{
-					_ui.ShowMsg("Uncompressing successfull.\n\n", true);
+					_ui.ShowMsg("Uncompressing successful.\n\n", true);
 					Thread.Sleep(200);
 					Console.Clear();
 					// Read file
@@ -297,7 +298,7 @@ namespace IMDBDatabase
                     seasonNumber, 
                     episodeNumber);
             }
-            else
+            else if (_titleInfo.ContainsKey(parentID))
             {
                 // Create a new list in key value
                 _episodeDict.Add(parentID, new List<Title>());
