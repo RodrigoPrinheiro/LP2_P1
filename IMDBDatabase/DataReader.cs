@@ -70,6 +70,9 @@ namespace IMDBDatabase
 		/// </summary>
 		private Dictionary<int, Rating> _ratingDict;
 
+        /// <summary>
+        /// Episode dictionary using parent title ID as key
+        /// </summary>
         private Dictionary<int, ICollection<Title>> _episodeDict;
 
 		/// <summary>
@@ -267,6 +270,10 @@ namespace IMDBDatabase
 					isAdult, startYear, endYear));
 		}
 
+        /// <summary>
+        /// Parse a raw line and add an episode to its proper parent series
+        /// </summary>
+        /// <param name="rawLine">Raw line information from a line</param>
         private void AddEpisodeToTitle(string rawLine)
         {
             // episodetconst   parenttconst     season    number
@@ -377,7 +384,5 @@ namespace IMDBDatabase
 		/// <returns>ID as an int</returns>
 		private int ExtractID(string rawTitleId) =>
 			int.Parse(rawTitleId.Substring(2));
-
-		
 	}
 }
