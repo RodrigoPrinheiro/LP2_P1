@@ -28,25 +28,29 @@ namespace IMDBDatabase
             return _titles.Where(x => x.Type == search);
         }
 
-        public IEnumerable<Title> SearchName(string nameContent)
+        public IReadable[] SearchName(string nameContent)
         {
             return _titles.Where(x => x.Name.Contains
-                (nameContent, StringComparison.CurrentCultureIgnoreCase));
+                (nameContent, 
+				StringComparison.CurrentCultureIgnoreCase)).ToArray<IReadable>();
         }
 
-        public IEnumerable<Title> SearchContent(bool content)
+        public IReadable[] SearchContent(bool content)
         {
-            return _titles.Where(x => x.AdultContent == content);
+            return _titles.Where(x => x.AdultContent == content).ToArray()
+				as IReadable[];
         }
 
-        public IEnumerable<Title> SearchStartYear(ushort year)
+        public IReadable[] SearchStartYear(ushort year)
         {
-            return _titles.Where(x => x.Year.Item1 == year);
+            return _titles.Where(x => x.Year.Item1 == year).ToArray()
+				as IReadable[];
         }
 
-        public IEnumerable<Title> SearchEndYear(ushort year)
+        public IReadable[] SearchEndYear(ushort year)
         {
-            return _titles.Where(x => x.Year.Item2 == year);
+            return _titles.Where(x => x.Year.Item2 == year).ToArray()
+				as IReadable[];
         }
 
         public IEnumerable<Title> SearchGenres(params string[] genres)

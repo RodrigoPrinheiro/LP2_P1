@@ -9,9 +9,9 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Collections.Generic;
-using System.Threading;
 using System.Text;
 using System.Linq;
+using System.Threading;
 
 namespace IMDBDatabase
 {
@@ -161,7 +161,7 @@ namespace IMDBDatabase
 				path, FileMode.Open, FileAccess.Read))
 			{
 				_ui.ShowMsg("File found and opened.", true);
-				Thread.Sleep(200);
+				_ui.WaitForMilliseconds(200);
 				Console.Clear();
 				// Uncompress file
 				_ui.ShowFakeLoadingProcess("Uncompressing");
