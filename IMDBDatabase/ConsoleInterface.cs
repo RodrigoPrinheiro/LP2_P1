@@ -20,18 +20,30 @@ namespace IMDBDatabase
 
         private const string _NAME_HEADER = "     TITLE NAME     ";
         private const string _TYPE_HEADER = "    TYPE    ";
+        private static readonly string[] _START_MENU_CHOICES =
+            {"Name", "Type", "Type of Content",
+            "Score", "Votes", "Year", "Genres", "People"};
+        private const string _SEARCH_MENU_SUBTITLE_ =
+            " \t↑ : Move Selection Up\t\t\tENTER : Select Search\n" +
+            " \t↓ : Move Selection Down\t\t\tESC : Exit";
         private const string _SEARCH_RESULT_MENU_TXT =
             " → : Next Page\t\t↑ : Move Selection Up\t\tENTER : Select Title\n" +
             " ← : Previous Page\t↓ : Move Selection Down\t\tESC : Exit Search";
         private const string _TITLE_DETAILED_MENU_TXT =
             " C : Show Title Crew\t\t\t\tE: Show Episode Title Search\n" +
             " P : Go to Parent Title\t\t\t\tESC : Exit Search";
-        private static readonly string[] _TITLE_INFO_HEADERS = 
-            {"Type", "Adult Content", "Score",
-            "Votes", "Start Year", "End Year", "Genres"};
+        private static readonly string[] _TITLE_INFO_HEADERS =
+            {"Type", "Adult Content", "Score", "Votes",
+            "Start Year", "End Year", "Genres"};
+
+        private static readonly string[] _TITLE_ =
+            { "██╗███╗   ███╗██████╗ ██████╗", "██║████╗ ████║██╔══██╗██╔══██╗",
+            "██║██╔████╔██║██║  ██║██████╔╝", "██║██║╚██╔╝██║██║  ██║██╔══██╗",
+            "██║██║ ╚═╝ ██║██████╔╝██████╔╝", "╚═╝╚═╝     ╚═╝╚═════╝ ╚═════╝"};
 
         private const ConsoleColor _DEFAULT_FG_COLOR = ConsoleColor.White;
         private const ConsoleColor _DEFAULT_BG_COLOR = ConsoleColor.Black;
+        private const ConsoleColor _DEFAULT_TITLE_COLOR = ConsoleColor.Magenta;
 
         private const char _ARROW_CHAR = '>';
 
@@ -59,6 +71,55 @@ namespace IMDBDatabase
             ForegroundColor = ConsoleColor.Red;
             ShowMsg(error);
             ForegroundColor = _DEFAULT_FG_COLOR;
+        }
+
+        public void RenderStartMenu()
+        {
+            byte leftPos = 39;
+            byte topPos = 21;
+            byte yIndex = 1;
+
+            RenderIMDB();
+            RenderMenu(_SEARCH_MENU_SUBTITLE_);
+            RenderSolidBackgroundBlock(
+                ConsoleColor.Yellow,
+                new int[] { topPos, leftPos },
+                new int[] { 40, 72 });
+
+            SetCursorPosition(leftPos + 4, topPos + 1);
+            BackgroundColor = _DEFAULT_TITLE_COLOR;
+            Write($"{CenterString("Search for", 25), 25}");
+            ResetColor();
+
+            for (int i = 0; i < _START_MENU_CHOICES.Length * 2; i++)
+            {
+                if (_START_MENU_CHOICES.Length > i)
+                {
+                    string paddedHeader = null;
+                    SetCursorPosition(leftPos + 1, topPos + 2 + yIndex++ + i);
+                    paddedHeader = CenterString(_START_MENU_CHOICES[i], 31);
+                    Write($"{paddedHeader, 31}");
+                }
+            }
+
+            _selectionArrowPos[0] = leftPos - 1;
+            _selectionArrowPos[1] = topPos + 3;
+            RenderVerticalSelectionArrow(false);
+
+        }
+
+        private void RenderIMDB()
+        {
+            byte headerLeftPosition = (byte)
+                (WindowWidth / 2 - _TITLE_[0].Length / 2);
+
+            ForegroundColor = _DEFAULT_TITLE_COLOR;
+            for (int i = 0; i < _TITLE_.Length; i++)
+            {
+                SetCursorPosition(headerLeftPosition, 10 + i);
+                Write(_TITLE_[i]);
+            }
+            ResetColor();
         }
 
         public void RenderMenu(string text)
@@ -237,7 +298,7 @@ namespace IMDBDatabase
                 SetCursorPosition(
                     headerLeftPosition + 4,
                     headerTopPosition + yIndex++ + i);
-                Write($"{_TITLE_INFO_HEADERS[i - 1], 15}");
+                Write($"{_TITLE_INFO_HEADERS[i - 1],15}");
 
                 SetCursorPosition(
                     headerLeftPosition + 21,
@@ -317,29 +378,14 @@ namespace IMDBDatabase
                 new int[] { 30, 109 });
 
             SetCursorPosition(headerLeftPosition + 5, headerTopPosition);
-            if (titleName.Length < _MAX_TITLE_NAME_DISPLAY_CHARS)
-            {
-                // Calculates the minimal padding that this title can have
-                byte minPadding = (byte)
-                    (_MAX_TITLE_NAME_DISPLAY_CHARS / 2 - titleName.Length / 2);
-
-                // Pads the title
-                titleName += new string(' ', 
-                    Math.Clamp(
-                        (_MAX_TITLE_NAME_DISPLAY_CHARS / 2) - titleName.Length,
-                        minPadding,
-                        _MAX_TITLE_NAME_DISPLAY_CHARS));
-            }
-            else
-                titleName = titleName.Substring(0, _MAX_TITLE_NAME_DISPLAY_CHARS);
-            
+            titleName = CenterString(titleName, _MAX_TITLE_NAME_DISPLAY_CHARS);
             // Writes the truncated/padded title
             Write($"{titleName,_MAX_TITLE_NAME_DISPLAY_CHARS}");
 
             // Make hole
             RenderSolidBackgroundBlock(
                 ConsoleColor.Black,
-                new int[2] { headerTopPosition + 2, headerLeftPosition + 20},
+                new int[2] { headerTopPosition + 2, headerLeftPosition + 20 },
                 new int[2] { 25, 100 });
         }
 
@@ -399,6 +445,23 @@ namespace IMDBDatabase
         {
             if (left != null) CursorLeft = (int)left;
             if (top != null) CursorTop = (int)top;
+        }
+
+        private string CenterString(string text, byte max)
+        {
+            if (text.Length < max)
+            {
+                // Calculates the minimal padding that this title can have
+                byte minPadding = (byte)
+                    (max / 2 - text.Length / 2);
+
+                // Pads the title
+                text += new string(' ', Math.Clamp((max / 2) - text.Length,
+                    minPadding, max));
+                return text;
+            }
+            return text.Substring(0, _MAX_TITLE_NAME_DISPLAY_CHARS);
+
         }
 
         private void RenderVerticalSelectionArrow(bool incrementIndex)

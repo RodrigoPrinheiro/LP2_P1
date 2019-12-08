@@ -18,9 +18,10 @@ namespace IMDBDatabase
                 "Action, Drama, Fantasy",
                 false,
                 "2102", "");
-			Database db = new Database();
-            ui.ShowTitleSearchResult(db.SearchName("Star wars"));
+            //Database db = new Database();
+            //ui.ShowTitleSearchResult(db.SearchName("Star wars"));
             //ui.ShowDetailedTitleInfo(info);
+            ui.RenderStartMenu();
             Console.ReadKey();
 		}
 	}
