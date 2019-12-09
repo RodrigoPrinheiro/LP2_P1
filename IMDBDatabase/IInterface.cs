@@ -4,12 +4,13 @@ namespace IMDBDatabase
 {
 	public interface IInterface
 	{
+		void RenderStartMenu(out int userDecision);
+		string RenderSearchBar(string searchingBy);
 		void ShowTitleSearchResult(IReadable[] results);
 		void RenderError(string error);
 		void ShowMsg(string msg, bool slowWrite = false);
 		void ShowFakeLoadingProcess(string fakeProcess);
 		void WaitForMilliseconds(int millisecs);
 		ConsoleKey WaitForAnyUserKeyPress();
-		string WaitForUserTextInput();
 	}
 }

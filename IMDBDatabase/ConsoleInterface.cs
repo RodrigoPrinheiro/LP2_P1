@@ -35,11 +35,15 @@ namespace IMDBDatabase
         private static readonly string[] _TITLE_INFO_HEADERS =
             {"Type", "Adult Content", "Score", "Votes",
             "Start Year", "End Year", "Genres"};
+		private static readonly string _SEARCH_BAR_MENU_TXT =
+			"\t\t\t\t\tEnter: Search\n" +
+			"\t\t\t\t\t  Esc: Exit";
 
-        private static readonly string[] _TITLE_ =
+		private static readonly string[] _TITLE_ =
             { "██╗███╗   ███╗██████╗ ██████╗", "██║████╗ ████║██╔══██╗██╔══██╗",
             "██║██╔████╔██║██║  ██║██████╔╝", "██║██║╚██╔╝██║██║  ██║██╔══██╗",
-            "██║██║ ╚═╝ ██║██████╔╝██████╔╝", "╚═╝╚═╝     ╚═╝╚═════╝ ╚═════╝"};
+            "██║██║ ╚═╝ ██║██████╔╝██████╔╝", "╚═╝╚═╝     ╚═╝╚═════╝ ╚═════╝",
+			"\t\t  The Database"};
 
         private const ConsoleColor _DEFAULT_FG_COLOR = ConsoleColor.White;
         private const ConsoleColor _DEFAULT_BG_COLOR = ConsoleColor.Black;
@@ -73,13 +77,20 @@ namespace IMDBDatabase
             ForegroundColor = _DEFAULT_FG_COLOR;
         }
 
-        public void RenderStartMenu()
+        public void RenderStartMenu(out int playerDecision)
         {
+			Clear();
+
             byte leftPos = 39;
             byte topPos = 21;
             byte yIndex = 1;
 
-            RenderIMDB();
+			bool leaveSwitch = false;
+			int finalDecision = 0;
+
+			_selectionArrowIndex = 0;
+
+			RenderIMDB();
             RenderMenu(_SEARCH_MENU_SUBTITLE_);
             RenderSolidBackgroundBlock(
                 ConsoleColor.Yellow,
@@ -102,11 +113,35 @@ namespace IMDBDatabase
                 }
             }
 
-            _selectionArrowPos[0] = leftPos - 1;
+            _selectionArrowPos[0] = leftPos - 2;
             _selectionArrowPos[1] = topPos + 3;
             RenderVerticalSelectionArrow(false);
 
-        }
+			while (!leaveSwitch)
+				switch (WaitForAnyUserKeyPress())
+				{
+					// Selection Up
+					case ConsoleKey.UpArrow:
+						RenderVerticalSelectionArrow(false, 8);
+						break;
+					// Selection Down
+					case ConsoleKey.DownArrow:
+						RenderVerticalSelectionArrow(true, 8);
+						break;
+					// User choice
+					case ConsoleKey.Enter:
+						finalDecision = _selectionArrowIndex;
+						leaveSwitch = true;
+						break;
+					// Exit search
+					case ConsoleKey.Escape:
+						finalDecision = -1;
+						leaveSwitch = true;
+						break;
+				};
+
+			playerDecision = finalDecision;
+		}
 
         private void RenderIMDB()
         {
@@ -153,9 +188,11 @@ namespace IMDBDatabase
 
         public void ShowTitleSearchResult(IReadable[] results)
         {
+			_selectionArrowIndex = 0;
+
             bool exitSearchResult = false;
 
-            byte headerTopPosition = 11;
+			byte headerTopPosition = 11;
             byte headerLeftPosition = 6;
             byte typeXPos = (byte)(headerLeftPosition + 85);
 
@@ -270,7 +307,6 @@ namespace IMDBDatabase
 
         public void ShowDetailedTitleInfo(IReadable titleInfo = null)
         {
-            bool exitSearchResult = false;
             string[] titleDetailedInfo = null;
             string titleHeader = null;
 
@@ -326,7 +362,70 @@ namespace IMDBDatabase
                 _MAX_RANDOM_DOT_WRITE_TIME));
         }
 
-        public ConsoleKey WaitForAnyUserKeyPress() => ReadKey().Key;
+		public string RenderSearchBar(string searchingBy)
+		{
+			Clear();
+
+			string userTxt = "";
+			bool exitSearch = false;
+
+			RenderMenu(_SEARCH_BAR_MENU_TXT);
+
+			// Render header
+			RenderSolidBackgroundBlock(
+				ConsoleColor.DarkYellow,
+				new int[2] { 13, 30 },
+				new int[2] { 15, 80 });
+
+			SetCursorPosition(35, 14);
+			Write($"{CenterString("Searching for: " + searchingBy, 40),40}");
+			
+			// Render outer Search bar
+			RenderSolidBackgroundBlock(
+				ConsoleColor.DarkYellow,
+				new int[2] { 15, 10 },
+				new int[2] { 18, 100 });
+
+			// Render inner Search bar
+			RenderSolidBackgroundBlock(
+				ConsoleColor.Black,
+				new int[2] { 16, 11 },
+				new int[2] { 17, 99 });
+			SetCursorPosition(11, 16);
+
+			CursorVisible = true;
+
+			while (!exitSearch)
+			{
+				ConsoleKey userKey = WaitForAnyUserKeyPress();
+
+				switch (userKey)
+				{
+					case ConsoleKey.Escape:
+						userTxt = null;
+						exitSearch = true;
+						break;
+					case ConsoleKey.Enter:
+						exitSearch = true;
+						break;
+					case ConsoleKey.Backspace:
+						SetCursorPosition(CursorLeft);
+						Write(" ");
+						SetCursorPosition(CursorLeft-1);
+
+						userTxt = userTxt.Remove(userTxt.Length - 1);
+						break;
+					default:
+						userTxt += userKey.ToString();
+						break;
+				}
+			}
+
+			CursorVisible = false;
+			return userTxt;
+		}
+
+		public ConsoleKey WaitForAnyUserKeyPress() => ReadKey().Key;
 
         public string WaitForUserTextInput() => ReadLine();
 
@@ -464,7 +563,8 @@ namespace IMDBDatabase
 
         }
 
-        private void RenderVerticalSelectionArrow(bool incrementIndex)
+        private void RenderVerticalSelectionArrow(bool incrementIndex, 
+			byte maxIndex = _MAX_SEARCH_RESULT_DISPLAY_TITLES)
         {
             // Clear Arrow
             SetCursorPosition(_selectionArrowPos[0], _selectionArrowPos[1]);
@@ -472,7 +572,7 @@ namespace IMDBDatabase
 
             // Increment
             if (incrementIndex &&
-                _selectionArrowIndex < _MAX_SEARCH_RESULT_DISPLAY_TITLES - 1)
+                _selectionArrowIndex < maxIndex - 1)
             {
                 _selectionArrowIndex++;
                 _selectionArrowPos[1] += 2;
