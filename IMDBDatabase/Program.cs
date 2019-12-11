@@ -21,7 +21,8 @@ namespace IMDBDatabase
                 "Action, Drama, Fantasy",
                 false,
                 "2102", "");
-			//Database db = new Database();
+
+			Database db = new Database();
 			//ui.ShowTitleSearchResult(db.SearchName("Star wars"));
 			//ui.ShowDetailedTitleInfo(info);
 
@@ -37,48 +38,55 @@ namespace IMDBDatabase
 					// Name
 					case 0:
 						userSearch = ui.RenderSearchBar("Name");
-						// if (userMenuDecision != null)
-						//		db.search(userMenuDecision)
+						if (userSearch == null) break;
+						ui.ShowTitleSearchResult(db.SearchName(userSearch));
 						break;
 					// Type
 					case 1:
 						userSearch = ui.RenderSearchBar("Type");
+						if (userSearch == null) break;
 						// db.search(userMenuDecision)
 						break;
 					// Type of content
 					case 2:
-						userSearch = ui.RenderSearchBar("Content");
-						// db.search(userMenuDecision)
+						bool? adult;
+						adult = ui.RenderContentChoice();
+						if (userSearch == null) break;
+						ui.ShowTitleSearchResult(db.SearchContent((bool)adult));
 						break;
 					// Score
 					case 3:
 						userSearch = ui.RenderSearchBar("Score");
+						if (userSearch == null) break;
 						// db.search(userMenuDecision)
 						break;
 					// Votes
 					case 4:
 						userSearch = ui.RenderSearchBar("Votes");
+						if (userSearch == null) break;
 						// db.search(userMenuDecision)
 						break;
 					// Year
 					case 5:
 						userSearch = ui.RenderSearchBar("Year");
+						if (userSearch == null) break;
 						// db.search(userMenuDecision)
 						break;
 					// Genres
 					case 6:
-						userSearch = ui.RenderSearchBar("Genres");
-						// db.search(userMenuDecision)
+						userSearch = ui.RenderSearchBar(
+							"Genres - Split by spaces");
+						if (userSearch == null) break;
+						//ui.ShowTitleSearchResult(db.SearchGenres(userSearch.Split(' ')));
 						break;
 					// People
 					case 7:
 						userSearch = ui.RenderSearchBar("People");
+						if (userSearch == null) break;
 						// db.search(userMenuDecision)
 						break;
 				}
 			}
-
-			Console.Clear();
 		}
 	}
 }

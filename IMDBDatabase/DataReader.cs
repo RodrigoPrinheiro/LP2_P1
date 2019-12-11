@@ -104,9 +104,13 @@ namespace IMDBDatabase
 			try
 			{
 				// Get ratings
+				_ui.ShowMsg("PROCESS: 1/4\n" +
+					"PROCESSING RATINGS.\n\n");
 				ReadFromFile(_TITLE_RATINGS_FILENAME, AddRatingTodictionary);
 
 				// Get the ammount of titles
+				_ui.ShowMsg("PROCESS: 2/4\n" +
+					"GETTING NUMBER OF TITLES.\n\n");
 				ReadFromFile(
 					_TITLE_BASICS_FILENAME, IncrementAmmountOfTitleLines);
 				_titleAmmount++;
@@ -115,10 +119,22 @@ namespace IMDBDatabase
 				_titleInfo = new Dictionary<int, Title>(_titleAmmount);
 
 				// Get titles into list
+				_ui.ShowMsg("PROCESS: 3/4\n" +
+					"PROCESSING TITLES.\n\n");
 				ReadFromFile(_TITLE_BASICS_FILENAME, AddTitleBasicsLineToList);
 
-                // Get titles episodes into list
-                ReadFromFile(_TITLE_EPISODE_FILENAME, AddEpisodeToTitle);
+				// Get titles episodes into list
+				_ui.ShowMsg("PROCESS: 4/4\n" +
+					"PROCESSING EPISODES.\n\n");
+				ReadFromFile(_TITLE_EPISODE_FILENAME, AddEpisodeToTitle);
+
+				Console.Clear();
+
+				// Final feedback
+				_ui.ShowMsg("COMPLETE.\n\n");
+				_ui.ShowMsg($"\nList size is: {_titleAmmount}", true);
+				_ui.ShowMsg($"\nEpisodes list size is: {_episodeDict.Count}", true);
+				_ui.ShowMsg("\nFile reading successful.\n", true);
 
 				// Return fill title info
 				return _titleInfo.Values.ToList();
@@ -134,13 +150,6 @@ namespace IMDBDatabase
 			{
 				_ui.RenderError("\nOops, memory run out... Thats our fault. :)");
 				throw e;
-			}
-
-			finally
-			{
-				_ui.ShowMsg($"\nList size is: {_titleAmmount}", true);
-                _ui.ShowMsg($"\nEpisodes list size is: {_episodeDict.Count}", true);
-				_ui.ShowMsg("\nFile reading successful.\n", true);
 			}
 		}
 		
@@ -162,15 +171,13 @@ namespace IMDBDatabase
 			{
 				_ui.ShowMsg("File found and opened.", true);
 				_ui.WaitForMilliseconds(200);
-				Console.Clear();
 				// Uncompress file
-				_ui.ShowFakeLoadingProcess("Uncompressing");
+				_ui.ShowFakeLoadingProcess("\n\nUncompressing");
 				using (GZipStream gzs = new GZipStream(
 					fs, CompressionMode.Decompress))
 				{
 					_ui.ShowMsg("Uncompressing successful.\n\n", true);
 					Thread.Sleep(200);
-					Console.Clear();
                     // Read file
                     using (BufferedStream bs = new BufferedStream(gzs))
                     {
@@ -310,16 +317,16 @@ namespace IMDBDatabase
             }
             else if (_titleInfo.ContainsKey(parentID) && !_episodeDict.ContainsKey(parentID))
             {
-                // Create a new list in key value
-                _episodeDict.Add(parentID, new List<Title>());
-                _episodeDict[parentID].Add(_titleInfo[id]);
+                //// Create a new list in key value
+                //_episodeDict.Add(parentID, new List<Title>());
+                //_episodeDict[parentID].Add(_titleInfo[id]);
 
-                // Add title to corresponding parent as an episode
-                _episodeDict[parentID].Add(_titleInfo[id]);
-                _titleInfo[parentID].AddEpisode(
-                    _titleInfo[id],
-                    seasonNumber,
-                    episodeNumber);
+                //// Add title to corresponding parent as an episode
+                //_episodeDict[parentID].Add(_titleInfo[id]);
+                //_titleInfo[parentID].AddEpisode(
+                //    _titleInfo[id],
+                //    seasonNumber,
+                //    episodeNumber);
             }
         }
 
