@@ -4,7 +4,6 @@
 /// 
 /// @author Rodrigo Pinheiro
 /// @date 2019
-
 namespace IMDBDatabase
 {
     /// <summary>

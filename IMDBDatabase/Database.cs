@@ -54,22 +54,10 @@ namespace IMDBDatabase
 				as IReadable[];
         }
 
-        public IEnumerable<Title> SearchGenres(params string[] genres)
+        public IReadable[] SearchGenre(TitleGenre genres)
         {
-            IEnumerable<Title> intersectedGenreTitles;
-            intersectedGenreTitles = _titles.
-                Where(x => x?.Genres[0].ToLower().Contains(genres[0]) ?? false);
-
-            if(genres.Length > 1)
-                for (int i = 1; i < genres.Length; i++)
-                {
-                    intersectedGenreTitles.Intersect(
-                        _titles.Where(x => x?.Genres[i].Contains
-                            (genres[i], StringComparison.CurrentCultureIgnoreCase)
-                            ?? false));
-                }
-
-            return intersectedGenreTitles;
+            return _titles.Where(x => x.Genres == genres).ToArray()
+                as IReadable[];
         }
     }
 }

@@ -317,16 +317,16 @@ namespace IMDBDatabase
             }
             else if (_titleInfo.ContainsKey(parentID) && !_episodeDict.ContainsKey(parentID))
             {
-                //// Create a new list in key value
-                //_episodeDict.Add(parentID, new List<Title>());
-                //_episodeDict[parentID].Add(_titleInfo[id]);
+                // Create a new list in key value
+                _episodeDict.Add(parentID, new List<Title>());
+                _episodeDict[parentID].Add(_titleInfo[id]);
 
-                //// Add title to corresponding parent as an episode
-                //_episodeDict[parentID].Add(_titleInfo[id]);
-                //_titleInfo[parentID].AddEpisode(
-                //    _titleInfo[id],
-                //    seasonNumber,
-                //    episodeNumber);
+                // Add title to corresponding parent as an episode
+                _episodeDict[parentID].Add(_titleInfo[id]);
+                _titleInfo[parentID].AddEpisode(
+                    _titleInfo[id],
+                    seasonNumber,
+                    episodeNumber);
             }
         }
 

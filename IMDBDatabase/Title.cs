@@ -66,7 +66,7 @@ namespace IMDBDatabase
         /// <summary>
         /// Genres of the Title
         /// </summary>
-        public string[] Genres { get; }
+        public TitleGenre Genres { get; }
 
         /// <summary>
         /// If the title is classified as adult content or not
@@ -99,6 +99,7 @@ namespace IMDBDatabase
             // Null-able integers so we can have null years in case of a movie etc...
             ushort? startYear = null;
             ushort? endYear = null;
+            string[] cleanGenres;
 
             // Parse the years
             startYear = UInt16.TryParse(year[0], out i) ? i : (ushort?)null;
@@ -109,7 +110,21 @@ namespace IMDBDatabase
             _rating = rating;
             Name = name;
             Type = (TitleType)Enum.Parse(typeof(TitleType), type, true);
-            Genres = genres.Split(',', ' ', StringSplitOptions.RemoveEmptyEntries);
+            cleanGenres = genres.Split(',', ' ', StringSplitOptions.RemoveEmptyEntries);
+
+            // Set genres
+            foreach (string g in cleanGenres)
+            {
+                // Remove weird characters from string
+                string gWithoutChars = g.Replace("-", "");
+
+                if (gWithoutChars.Equals(@"\N"))
+                    gWithoutChars = "None";
+
+                Genres |= (TitleGenre)Enum.Parse
+                    (typeof(TitleGenre), gWithoutChars, true);
+            }
+
             AdultContent = content;
             Year = new Tuple<ushort?, ushort?>(startYear, endYear);
         }
@@ -179,9 +194,7 @@ namespace IMDBDatabase
             // Append Year
             info.Append(yearOne + "\t");
             info.Append(yearTwo + "\t");
-            // Append Genres
-            foreach (string s in Genres)
-                info.Append($"{s} ");
+            info.Append(Genres.ToString());
 
             // Return created string
             return info.ToString();

@@ -6,8 +6,23 @@ namespace IMDBDatabase
 	{
 		static void Main(string[] args)
 		{
+            //StringTest();
 			ThomasDebug(args);
 		}
+
+        private static void StringTest()
+        {
+            string s = "Sci-Fi";
+            string e = "Film-Noir";
+
+            string f = s.Replace("-", "");
+
+            Title t = new Title(2, new Rating(21, 213)
+                , "no", "movie", $"{s}, {e}", true, "2023", "2324");
+
+
+            Console.WriteLine(t.GetDetailedInfo());
+        }
 
 		private static void ThomasDebug(string[] args)
 		{
@@ -23,8 +38,6 @@ namespace IMDBDatabase
                 "2102", "");
 
 			Database db = new Database();
-			//ui.ShowTitleSearchResult(db.SearchName("Star wars"));
-			//ui.ShowDetailedTitleInfo(info);
 
 			while (true)
 			{
