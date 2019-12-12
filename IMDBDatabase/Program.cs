@@ -52,7 +52,7 @@ namespace IMDBDatabase
 					case 0:
 						userSearch = ui.RenderSearchBar("Name");
 						if (userSearch == null) break;
-						ui.ShowTitleSearchResult(db.SearchName(userSearch));
+						//ui.ShowTitleSearchResult(db.SearchName(userSearch));
 						break;
 					// Type
 					case 1:

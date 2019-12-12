@@ -11,6 +11,8 @@ namespace IMDBDatabase
     /// </summary>
     public enum TitleType
     {
+        /// <summary> Ignores this type in the search</summary>
+        Ignore,
         /// <summary> defines Title as Movie</summary>
         Movie,
         /// <summary> defines Title as TvMovie</summary>
