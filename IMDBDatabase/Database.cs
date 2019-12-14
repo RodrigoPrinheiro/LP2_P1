@@ -21,7 +21,9 @@ namespace IMDBDatabase
         /// <summary>
         /// The main collection that contains every title in the IMDB database.
         /// </summary>
-        private ICollection<Title> _titles;
+        private IEnumerable<Title> _titles;
+
+        private IEnumerable<Person> _people;
 
         /// <summary>
         /// Database constructor, only has to initialize an IMDBDatabase.DataReader
@@ -32,6 +34,7 @@ namespace IMDBDatabase
 			DataReader dr = new DataReader();
 
             _titles = dr.ReadData();
+            _people = dr.GetPeople();
         }
 
         /// <summary>
@@ -76,15 +79,6 @@ namespace IMDBDatabase
         }
 
         /// <summary>
-        /// Adds a title to the main collection
-        /// </summary>
-        /// <param name="title"> Title to be added to the main collection</param>
-        public void AddTitle(Title title)
-        {
-            _titles.Add(title);
-        }
-
-        /// <summary>
         /// Asks the database for a given type and returns an array of IReadable
         /// with all the valid entries.
         /// </summary>
@@ -112,7 +106,7 @@ namespace IMDBDatabase
         }
 
         /// <summary>
-        /// Aks the database for a given content, true for adult false for not,
+        /// Asks the database for a given content, true for adult false for not,
         /// and returns an array with all of the valid entries.
         /// </summary>
         /// <param name="content"> True for adult content, false to exclude
@@ -126,7 +120,7 @@ namespace IMDBDatabase
         }
 
         /// <summary>
-        /// Aks the database for a given start year,
+        /// Asks the database for a given start year,
         /// and returns an array with all of the valid entries.
         /// </summary>
         /// <param name="year"> The start year to search for</param>
@@ -139,7 +133,7 @@ namespace IMDBDatabase
         }
 
         /// <summary>
-        /// Aks the database for a given end year,
+        /// Asks the database for a given end year,
         /// and returns an array with all of the valid entries.
         /// </summary>
         /// <param name="year"> The end year to search for</param>
@@ -152,7 +146,7 @@ namespace IMDBDatabase
         }
 
         /// <summary>
-        /// Aks the database for a given Genre (can search for multiple),
+        /// Asks the database for a given Genre (can search for multiple),
         /// and returns an array with all of the valid entries.
         /// </summary>
         /// <param name="genres"> TitleGenre Flags enumeration for what

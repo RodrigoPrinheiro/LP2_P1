@@ -537,6 +537,8 @@ namespace IMDBDatabase
             _peopleInfo.Add(newCrewMember);
 		}
 
+        public IEnumerable<Person> GetPeople() => _peopleInfo;
+
 		/// <summary>
 		/// Find the rating data of the requested ID on the dictionary.
 		/// </summary>
