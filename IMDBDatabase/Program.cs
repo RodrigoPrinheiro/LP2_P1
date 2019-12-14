@@ -65,7 +65,7 @@ namespace IMDBDatabase
 						bool? adult;
 						adult = ui.RenderContentChoice();
 						if (userSearch == null) break;
-						ui.ShowTitleSearchResult(db.SearchContent((bool)adult));
+						//ui.ShowTitleSearchResult(db.SearchContent((bool)adult));
 						break;
 					// Score
 					case 3:
