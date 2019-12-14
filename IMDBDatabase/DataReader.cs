@@ -537,6 +537,10 @@ namespace IMDBDatabase
             _peopleInfo.Add(newCrewMember);
 		}
 
+        /// <summary>
+        /// Get the current Person collection
+        /// </summary>
+        /// <returns> Returns an IEnumerable containing IMDBDatabase.Person</returns>
         public IEnumerable<Person> GetPeople() => _peopleInfo;
 
 		/// <summary>

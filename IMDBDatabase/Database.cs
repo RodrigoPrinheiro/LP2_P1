@@ -23,6 +23,9 @@ namespace IMDBDatabase
         /// </summary>
         private IEnumerable<Title> _titles;
 
+        /// <summary>
+        /// The main collection that contains every person in the IMDB database.
+        /// </summary>
         private IEnumerable<Person> _people;
 
         /// <summary>
