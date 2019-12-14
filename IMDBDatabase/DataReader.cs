@@ -20,7 +20,7 @@ namespace IMDBDatabase
 	/// </summary>
 	class DataReader
 	{
-		// Consts
+		// Constants
 		/// <summary>
 		/// Name of the name_basics file
 		/// </summary>
@@ -56,7 +56,7 @@ namespace IMDBDatabase
 		private readonly string _path;
 
 		/// <summary>
-		/// Ammount of titles
+		/// Amount of titles
 		/// </summary>
 		private int _titleAmmount;
 
@@ -157,9 +157,9 @@ namespace IMDBDatabase
 
 				// Final feedback
 				_ui.ShowMsg("COMPLETE.\n\n");
-				_ui.ShowMsg($"\nTitle ammount is: {_titleAmmount}", true);
-				_ui.ShowMsg($"\nEpisodes ammount is: {_episodeAmmount}", true);
-				_ui.ShowMsg($"\nPeople ammount is: {_peopleAmmount}", true);
+				_ui.ShowMsg($"\nTitle amount is: {_titleAmmount}", true);
+				_ui.ShowMsg($"\nEpisodes amount is: {_episodeAmmount}", true);
+				_ui.ShowMsg($"\nPeople amount is: {_peopleAmmount}", true);
 				_ui.ShowMsg("\nFile reading successful.\n", true);
 
 				_ui.ShowMsg("\n\nPress any key to continue...", true);
@@ -251,7 +251,7 @@ namespace IMDBDatabase
 		}
 
 		/// <summary>
-		/// Increment ammount of title lines if the line isn't a header. 
+		/// Increment amount of title lines if the line isn't a header. 
 		/// </summary>
 		/// <param name="rawLine">Raw line.</param>
 		private void IncrementAmmountOfTitleLines(string rawLine)
@@ -265,7 +265,7 @@ namespace IMDBDatabase
 		}
 
 		/// <summary>
-		/// Increment ammount of Rating lines if the line isn't a header. 
+		/// Increment amount of Rating lines if the line isn't a header. 
 		/// </summary>
 		/// <param name="rawLine">Raw line.</param>
 		private void IncrementAmmountOfRatingLines(string rawLine)
@@ -279,7 +279,7 @@ namespace IMDBDatabase
 		}
 
 		/// <summary>
-		/// Increment ammount of Episode lines if the line isn't a header. 
+		/// Increment amount of Episode lines if the line isn't a header. 
 		/// </summary>
 		/// <param name="rawLine">Raw line.</param>
 		private void IncrementAmmountOfEpisodeLines(string rawLine)
@@ -293,7 +293,7 @@ namespace IMDBDatabase
 		}
 
 		/// <summary>
-		/// Increment ammount of People lines if the line isn't a header. 
+		/// Increment amount of People lines if the line isn't a header. 
 		/// </summary>
 		/// <param name="rawLine">Raw line.</param>
 		private void IncrementAmmountOfPeopleLines(string rawLine)
@@ -308,26 +308,26 @@ namespace IMDBDatabase
 
 		private void CreateTitleDict()
 		{
-			// Initialize title list with predetermined ammount of titles
+			// Initialize title list with predetermined amount of titles
 			_titleInfo = new Dictionary<int, Title>(_titleAmmount + 1);
 		}
 
 		private void CreateRatingDict()
 		{
-			// Initialize title list with predetermined ammount of titles
+			// Initialize title list with predetermined amount of titles
 			_ratingDict = new Dictionary<int, Rating>(_ratingAmmount + 1);
 		}
 
 		private void CreateEpisodeDict()
 		{
-			// Initialize title list with predetermined ammount of titles
+			// Initialize title list with predetermined amount of titles
 			_episodeDict = new Dictionary<int, ICollection<Title>>
 				( _episodeAmmount + 1);
 		}
 
 		private void CreatePeopleDict()
 		{
-			// Initialize title list with predetermined ammount of titles
+			// Initialize title list with predetermined amount of titles
 			_peopleInfo = new Dictionary<int, Person>(_peopleAmmount + 1);
 		}
 
@@ -389,10 +389,9 @@ namespace IMDBDatabase
 
 			Rating rating = GetRatingFromID(id);
 
-			// Pass the info, ID is the key to the dic
+			// Pass the info, ID is the key to the dictionary
 			_titleInfo.Add(id ,new Title(
-				id, rating, name, type, genres,
-					isAdult, startYear, endYear));
+                rating, name, type, genres, isAdult, startYear, endYear));
 		}
 
         /// <summary>
@@ -401,7 +400,7 @@ namespace IMDBDatabase
         /// <param name="rawLine">Raw line information from a line</param>
         private void AddEpisodeToTitle(string rawLine)
         {
-            // episodetconst   parenttconst     season    number
+            // episode tconst   parent tconst     season    number
 
             string[] words = rawLine.Split('\t');
 
@@ -416,7 +415,6 @@ namespace IMDBDatabase
             // save episode ID
             id = ExtractID(words[0]);
             parentID = ExtractID(words[1]);
-
             // Get season number in a null-able byte
             seasonNumber = byte.TryParse(words[2], out byte bResult)
                 ? (byte?)bResult : null;
@@ -503,49 +501,29 @@ namespace IMDBDatabase
 
 			int nConst = 0;
 			string name = "";
-			int birthYear = 0;
-			int deathYear = 0;
-			string[] professions = default;
-			ICollection<Title> knownForTitles = new List<Title>();
+            ushort parseVar;
+            ushort? birthYear = 0;
+			ushort? deathYear = 0;
+			string professions = default;
+			ICollection<Title> knownForTitles = new HashSet<Title>();
 
-			// Run through all of the words, respectively parsing info
-			for (byte i = 0; i < words.Length; i++)
-			{
-				switch (i)
-				{
-					// nconst
-					case 0:
-						nConst = ExtractID(words[i]);
-						break;
-					// primary name
-					case 1:
-						name = words[i];
-						break;
-					// birth year
-					case 2:
-						birthYear = Int32.Parse(words[i]);
-						break;
-					// death year
-					case 3:
-						deathYear = Int32.Parse(words[i]);
-						break;
-					// primary profession
-					case 4:
-						professions = words[i].Split(',');
-						break;
-					// known for titles
-					case 5:
-						foreach (string titleID in words[i].Split(','))
-							if (_titleInfo.ContainsKey(ExtractID(titleID)))
-								knownForTitles.Add(
-									_titleInfo[ExtractID(titleID)]);
-						break;
-				}
-			}
+            // Extract info
+            nConst = ExtractID(words[0]);
+            name = words[1];
+            birthYear = UInt16.TryParse(words[2], out parseVar) ?
+                parseVar : (ushort?)null;
 
-			//_peopleInfo.Add(
-			//	new Person(nConst, name, birthYear, deathYear, professions,
-			// knownForTitlesoka));
+            deathYear = UInt16.TryParse(words[3], out parseVar) ?
+                parseVar : (ushort?)null;
+            professions = words[4];
+
+            // Get Titles known for
+            foreach (string titleID in words[5].Split(','))
+                if (_titleInfo.ContainsKey(ExtractID(titleID)))
+                    knownForTitles.Add(_titleInfo[ExtractID(titleID)]);
+			
+            _peopleInfo.Add(nConst, new Person(
+                name, birthYear, deathYear, professions, knownForTitles));
 		}
 
 		/// <summary>

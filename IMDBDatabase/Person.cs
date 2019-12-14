@@ -7,46 +7,30 @@ namespace IMDBDatabase
 	/// <summary>
 	/// Basic set of information to identify a person in a IMDBDatabase.Title. 
 	/// </summary>
-	public class Person : IHasID
+	public class Person
 	{
-		private HashSet<IHasID> _filmography;
+		private ICollection<Title> _filmography;
 
-		public int ID { get; }
 		public string Name { get; }
-		public string[] Professions { get; }
+		public string Professions { get; }
 		public Tuple<ushort?, ushort?> Year { get; }
 
-		public Person(int id, string name, string[] year, string[] professions)
+		public Person(string name, ushort? birthYear, ushort? deathYear, 
+            string professions, ICollection<Title> knownForTitles)
 		{
-			ushort i;
-			// Nullable integers so we can have null years in case of a movie etc...
-			ushort? startYear = null;
-			ushort? endYear = null;
-
-			// Parse the years
-			startYear = UInt16.TryParse(year[0], out i) ? i : (ushort?)null;
-			endYear = UInt16.TryParse(year[1], out i) ? i : (ushort?)null;
-
-			ID = id;
 			Name = name;
 			Professions = professions;
-			Year = new Tuple<ushort?, ushort?>(startYear, endYear);
-
-			_filmography = new HashSet<IHasID>();
+			Year = new Tuple<ushort?, ushort?>(birthYear, deathYear);
+			_filmography = knownForTitles;
 		}
 
-		public IEnumerable<IHasID> Filmography
+		public IEnumerable<Title> Filmography
 		{
 			get
 			{
-				foreach (IHasID id in _filmography)
+				foreach (Title id in _filmography)
 					yield return id;
 			}
-		}
-
-		public void AddTitle(IHasID id)
-		{
-			_filmography.Add(id);
 		}
 	}
 }

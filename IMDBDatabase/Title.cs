@@ -16,7 +16,7 @@ namespace IMDBDatabase
     /// Class representing a dataset for a Title of the IMDB database.
     /// Movies, series, shorts, video games etc...
     /// </summary>
-    public class Title : IEnumerable<Title>, IComparable<Title>, IHasID, IReadable
+    public class Title : IEnumerable<Title>, IComparable<Title>, IReadable
     {
         /// <summary>
         /// Collection for all the episodes assign to this Title
@@ -24,14 +24,14 @@ namespace IMDBDatabase
         private ICollection<Title> _episodes;
 
         /// <summary>
+        /// Collection for the crew that worked in this Title
+        /// </summary>
+        private ICollection<Person> _crew;
+
+        /// <summary>
         /// Parent Title for when this title is an episode;
         /// </summary>
         private Title _parentTitle;
-
-        /// <summary>
-        /// Integer ID of this Title
-        /// </summary>
-        public int ID { get; }
 
         /// <summary>
         /// Struct for the rating of this Title
@@ -91,7 +91,7 @@ namespace IMDBDatabase
         /// <param name="type">Type of this Title, movie, series etc...</param>
         /// <param name="genres">Genres of the Title, Drama, Action etc...</param>
         /// <param name="content">Is the content adult or not</param>
-        public Title(int id, Rating rating, string name,
+        public Title(Rating rating, string name,
             string type, string genres, bool content, params string[] year)
         {
             // Temporary variable to parse years
@@ -104,13 +104,16 @@ namespace IMDBDatabase
             // Parse the years
             startYear = UInt16.TryParse(year[0], out i) ? i : (ushort?)null;
             endYear = UInt16.TryParse(year[1], out i) ? i : (ushort?)null;
+            cleanGenres = genres.Split(',', ' ', 
+                StringSplitOptions.RemoveEmptyEntries);
 
             // Initialize Variables
-            ID = id;
+            _crew = new HashSet<Person>();
             _rating = rating;
             Name = name;
             Type = (TitleType)Enum.Parse(typeof(TitleType), type, true);
-            cleanGenres = genres.Split(',', ' ', StringSplitOptions.RemoveEmptyEntries);
+            AdultContent = content;
+            Year = new Tuple<ushort?, ushort?>(startYear, endYear);
 
             // Set genres
             foreach (string g in cleanGenres)
@@ -124,9 +127,6 @@ namespace IMDBDatabase
                 Genres |= (TitleGenre)Enum.Parse
                     (typeof(TitleGenre), gWithoutChars, true);
             }
-
-            AdultContent = content;
-            Year = new Tuple<ushort?, ushort?>(startYear, endYear);
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace IMDBDatabase
         public void AddEpisode(Title episode, byte? season, short? number)
         {
             // Only creates a list if this title needs an episode list.
-            if (_episodes == null) _episodes = new List<Title>();
+            if (_episodes == null) _episodes = new HashSet<Title>();
             // Ads the title
             _episodes?.Add(episode);
             // Sets parent
@@ -151,6 +151,11 @@ namespace IMDBDatabase
         /// </summary>
         /// <param name="parent">Parent Title</param>
         public void SetParent(Title parent) => _parentTitle = parent;
+
+        public void AddCrewMember(Person person)
+        {
+            _crew.Add(person);
+        }
 
         public int CompareTo(Title other)
         {
