@@ -98,7 +98,7 @@ namespace IMDBDatabase
 		/// <summary>
 		/// People dictionary containing ID as key
 		/// </summary>
-		private Dictionary<int, Person> _peopleInfo;
+		private ICollection<Person> _peopleInfo;
 
 		/// <summary>
 		/// Constructor that initializes instance variables.
@@ -147,11 +147,11 @@ namespace IMDBDatabase
 					AddEpisodeToTitle);
 
 				// Get People
-				//_ui.ShowMsg("PROCESS 4/4: People\n");
-				//ReadFromFile(_NAME_BASICS_FILENAME,
-				//	IncrementAmmountOfPeopleLines,
-				//	CreatePeopleDict,
-				//	AddPeopleLineToDict);
+				_ui.ShowMsg("PROCESS 4/4: People\n");
+				ReadFromFile(_NAME_BASICS_FILENAME,
+					IncrementAmmountOfPeopleLines,
+					CreatePeopleDict,
+					AddPeopleLineToDict);
 
 				Console.Clear();
 
@@ -328,7 +328,7 @@ namespace IMDBDatabase
 		private void CreatePeopleDict()
 		{
 			// Initialize title list with predetermined amount of titles
-			_peopleInfo = new Dictionary<int, Person>(_peopleAmmount + 1);
+			_peopleInfo = new HashSet<Person>(_peopleAmmount + 1);
 		}
 
 		/// <summary>
@@ -499,7 +499,6 @@ namespace IMDBDatabase
 			// Check if it is not a header
 			if (!words[0].StartsWith("nm")) return;
 
-			int nConst = 0;
 			string name = "";
             ushort parseVar;
             ushort? birthYear = 0;
@@ -508,7 +507,6 @@ namespace IMDBDatabase
 			ICollection<Title> knownForTitles = new HashSet<Title>();
 
             // Extract info
-            nConst = ExtractID(words[0]);
             name = words[1];
             birthYear = UInt16.TryParse(words[2], out parseVar) ?
                 parseVar : (ushort?)null;
@@ -519,11 +517,24 @@ namespace IMDBDatabase
 
             // Get Titles known for
             foreach (string titleID in words[5].Split(','))
-                if (_titleInfo.ContainsKey(ExtractID(titleID)))
-                    knownForTitles.Add(_titleInfo[ExtractID(titleID)]);
-			
-            _peopleInfo.Add(nConst, new Person(
-                name, birthYear, deathYear, professions, knownForTitles));
+            {
+                int id = ExtractID(titleID);
+                if (_titleInfo.ContainsKey(id))
+                    knownForTitles.Add(_titleInfo[id]);
+            }
+
+            // Now that we have the information for 1 person we create it.
+            Person newCrewMember = new Person
+                (name, birthYear, deathYear, professions, knownForTitles);
+
+            // For each title that the person is known for, add it to it's crew
+            // collection.
+            foreach (Title title in knownForTitles)
+            {
+                title.AddCrewMember(newCrewMember);
+            }
+
+            _peopleInfo.Add(newCrewMember);
 		}
 
 		/// <summary>
