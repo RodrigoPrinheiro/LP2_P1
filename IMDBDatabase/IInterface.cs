@@ -12,5 +12,6 @@ namespace IMDBDatabase
 		void ShowMsg(string msg, bool slowWrite = false);
 		void ShowFakeLoadingProcess(string fakeProcess);
 		void WaitForMilliseconds(int millisecs);
+        void RenderAdvancedSearch(Database database);
 	}
 }

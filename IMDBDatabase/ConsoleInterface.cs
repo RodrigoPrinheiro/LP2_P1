@@ -243,13 +243,6 @@ namespace IMDBDatabase
 
 		public void RenderAdvancedSearch(Database db)
 		{
-			//string name = null,
-			//TitleType type = 0,
-			//TitleGenre genre = 0,
-			//bool? content = null,
-			//ushort? startYear = null, 
-			//ushort? endYear = null
-
 			string name = null;
 			TitleType type = 0;
 			TitleGenre genre = 0;
@@ -261,7 +254,6 @@ namespace IMDBDatabase
 
 			while (!leaveDetailedSearch)
 			{
-				#region PRINTING REMOVE LATER
 				Clear();
 
 				byte leftPos = 39;
@@ -296,8 +288,6 @@ namespace IMDBDatabase
 				_selectionArrowPos[0] = leftPos - 2;
 				_selectionArrowPos[1] = topPos + 3;
 				RenderVerticalSelectionArrow(false);
-
-				#endregion
 
 				while (!leaveSwitch)
 				{
@@ -448,11 +438,10 @@ namespace IMDBDatabase
 
 			Clear();
 			byte enumLength = (byte)_GENRES.Length;
-
 			byte leftPos = 9;
 			byte topPos = 20;
 
-			TitleGenre finalGenre = 0;
+			TitleGenre finalGenre = TitleGenre.Ignore;
 
 			SetCursorPosition(leftPos + 4, topPos + 1);
 			BackgroundColor = _DEFAULT_TITLE_COLOR;
@@ -466,17 +455,17 @@ namespace IMDBDatabase
 					Write('\n');
 			}
 			RenderMenu(_SEARCH_MENU_SUBTITLE_);
-			RenderSearchBar("Genres (split by spaces using index)", false);
+			userChoice = RenderSearchBar
+                ("Genres (split by spaces using index)", false);
 
-			foreach(string index in userChoice.Split(' '))
+			foreach(string index in userChoice.Split(" "))
 			{
 				int parsedIndex = 0;
-				bool success = Int32.TryParse(index, out parsedIndex);
-				if (success)
+                WriteLine(index);
+				if (Int32.TryParse(index, out parsedIndex))
 				{
-					finalGenre |= 
-						(TitleGenre)Enum.Parse(typeof(TitleGenre), 
-						_GENRES[parsedIndex]);
+					finalGenre |= (TitleGenre)Enum.Parse
+                        (typeof(TitleGenre), _GENRES[parsedIndex], true);
 				}
 			}
 

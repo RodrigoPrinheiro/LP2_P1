@@ -12,8 +12,7 @@ namespace IMDBDatabase
 		{
 			int userMenuDecision = 0;
 			string userSearch = "";
-			//IInterface ui = new ConsoleInterface();
-			ConsoleInterface ui = new ConsoleInterface();
+			IInterface ui = new ConsoleInterface();
 			Database db = new Database();
 
 			while (true)
@@ -40,11 +39,6 @@ namespace IMDBDatabase
 					// Detailed
 					case 2:
 						ui.RenderAdvancedSearch(db);
-						
-						//ui.ShowTitleSearchResult(
-						//db.AdvancedSearch(
-						//	results.Item1, results.Item2, results.Item3, 
-						//	results.Item4, results.Item5, results.Item6));
 						break;
 				}
 			}

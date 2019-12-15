@@ -21,12 +21,12 @@ namespace IMDBDatabase
         /// <summary>
         /// The main collection that contains every title in the IMDB database.
         /// </summary>
-        private IEnumerable<Title> _titles;
+        private ICollection<Title> _titles;
 
         /// <summary>
         /// The main collection that contains every person in the IMDB database.
         /// </summary>
-        private IEnumerable<Person> _people;
+        private ICollection<Person> _people;
 
         /// <summary>
         /// Database constructor, only has to initialize an IMDBDatabase.DataReader
@@ -35,7 +35,6 @@ namespace IMDBDatabase
         public Database()
         {
 			DataReader dr = new DataReader();
-
             _titles = dr.ReadData();
             _people = dr.GetPeople();
         }
@@ -59,27 +58,26 @@ namespace IMDBDatabase
             bool? content = null, 
             ushort? startYear = null, ushort? endYear = null)
         {
-			Console.WriteLine("AAAAAAAAAAAAAAAAAA");
             // Create a list for the results (list so we can use Sort())
-            List<Title> result = new List<Title>();
+            IEnumerable<Title> query = new List<Title>(_titles);
+
             if (name != null)
-                result.Union(SearchName(name));
+                query = SearchName(name, query);
             if (type != 0)
-                result.Union(SearchType(type));
+                query = SearchType(type, query);
             if (genre != 0)
-                result.Union(SearchGenre(genre));
+                query = SearchGenre(genre, query);
             if (content != null)
-                result.Union(SearchContent((bool)content));
+                query = SearchContent((bool)content, query);
             if (startYear != null)
-                result.Union(SearchStartYear((ushort)startYear));
+                query = SearchStartYear((ushort)startYear, query);
             if (endYear != null)
-                result.Union(SearchEndYear((ushort)endYear));
+                query = SearchEndYear((ushort)endYear, query);
 
             // Sort by average rating (popularity)
-            result.Sort();
-
+            //(query as List<Title>).Sort();
             // Return IReadable Array
-            return result.ToArray() as IReadable[];
+            return query.ToArray() as IReadable[];
         }
 
         /// <summary>
@@ -89,10 +87,10 @@ namespace IMDBDatabase
         /// <param name="type"> TitleType to be searched for</param>
         /// <returns> IReadable array containing all the readable information
         /// from a title</returns>
-        private IReadable[] SearchType(TitleType type)
+        private IEnumerable<Title> SearchType(TitleType type,
+            IEnumerable<Title> source)
         {
-            return _titles.Where(x => x.Type == type).ToArray()
-                as IReadable[];
+            return source.Where(x => x.Type == type);
         }
 
         /// <summary>
@@ -102,11 +100,12 @@ namespace IMDBDatabase
         /// <param name="nameContent"> Name to be searched for</param>
         /// <returns> IReadable array containing all the readable information
         /// from a title</returns>
-        private IReadable[] SearchName(string nameContent)
+        private IEnumerable<Title> SearchName(string nameContent,
+            IEnumerable<Title> source)
         {
-            return _titles.Where(x => x.Name.Contains
+            return source.Where(x => x.Name.Contains
                 (nameContent, 
-				StringComparison.CurrentCultureIgnoreCase)).ToArray<IReadable>();
+				StringComparison.CurrentCultureIgnoreCase));
         }
 
         /// <summary>
@@ -117,10 +116,10 @@ namespace IMDBDatabase
         /// adult content</param>
         /// <returns> IReadable array containing all the readable information
         /// from a title</returns>
-        private IReadable[] SearchContent(bool content)
+        private IEnumerable<Title> SearchContent(bool content,
+            IEnumerable<Title> source)
         {
-            return _titles.Where(x => x.AdultContent == content).ToArray()
-				as IReadable[];
+            return source.Where(x => x.AdultContent == content);
         }
 
         /// <summary>
@@ -130,10 +129,10 @@ namespace IMDBDatabase
         /// <param name="year"> The start year to search for</param>
         /// <returns> IReadable array containing all the readable information
         /// from a title</returns>
-        private IReadable[] SearchStartYear(ushort year)
+        private IEnumerable<Title> SearchStartYear(ushort year,
+            IEnumerable<Title> source)
         {
-            return _titles.Where(x => x.Year.Item1 == year).ToArray()
-				as IReadable[];
+            return source.Where(x => x.Year.Item1 == year);
         }
 
         /// <summary>
@@ -143,10 +142,10 @@ namespace IMDBDatabase
         /// <param name="year"> The end year to search for</param>
         /// <returns> IReadable array containing all the readable information
         /// from a title</returns>
-        private IReadable[] SearchEndYear(ushort year)
+        private IEnumerable<Title> SearchEndYear(ushort year,
+            IEnumerable<Title> source)
         {
-            return _titles.Where(x => x.Year.Item2 == year).ToArray()
-				as IReadable[];
+            return source.Where(x => x.Year.Item2 == year);
         }
 
         /// <summary>
@@ -157,10 +156,10 @@ namespace IMDBDatabase
         /// Genres to search for</param>
         /// <returns> IReadable array containing all the readable information
         /// from a title</returns>
-        private IReadable[] SearchGenre(TitleGenre genres)
+        private IEnumerable<Title> SearchGenre(TitleGenre genres,
+            IEnumerable<Title> source)
         {
-            return _titles.Where(x => x.Genres == genres).ToArray()
-                as IReadable[];
+            return source.Where(x => x.Genres == genres);
         }
     }
 }
