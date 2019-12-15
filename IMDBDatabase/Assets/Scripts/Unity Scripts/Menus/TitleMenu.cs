@@ -7,7 +7,7 @@ using IMDBDatabase;
 public class TitleMenu : MonoBehaviour
 {
 	[Header("DATABASE HOLDER")]
-	[SerializeField] private Database _dataBase = null;
+	[SerializeField] private DatabaseHolder _dataBaseHolder = null;
 
 	[Header("Menus")]
 	[SerializeField] private GameObject _mainMenu = null;
@@ -58,7 +58,8 @@ public class TitleMenu : MonoBehaviour
 	private void OnSearchButtonClick()
 	{
 		GetValuesFromFields();
-		_dataBase.AdvancedSearch(name, type, genre, content, (ushort)startYear, (ushort)endYear);
+		_dataBaseHolder.AdvancedTitleSearch
+			(name, type, genre, content, (ushort)startYear, (ushort)endYear);
 	}
 
 	private	void ToggleMainMenu()

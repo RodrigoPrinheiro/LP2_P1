@@ -5,13 +5,26 @@ using IMDBDatabase;
 
 public class DatabaseHolder : MonoBehaviour
 {
-	public Database Database { get => db; }
+	[SerializeField] private GameObject _scrollPrefab;
 
-	private Database db = null;
+	private Database _db;
 
-    // Start is called before the first frame update
-    void Start()
+	void Start()
     {
-		Database db = new Database();
+		_db = new Database();
+	}
+
+	public void AdvancedTitleSearch(string name, TitleType type, TitleGenre genre, 
+		bool content, ushort startYear, ushort endYear)
+	{
+		IReadable[] results = 
+			_db.AdvancedSearch(name, type, genre, content, startYear, endYear);
+
+		Instantiate(_scrollPrefab).GetComponent<ResultScroll>().Initialize(results);
+	}
+
+	public void PersonSearch(string name)
+	{
+		
 	}
 }

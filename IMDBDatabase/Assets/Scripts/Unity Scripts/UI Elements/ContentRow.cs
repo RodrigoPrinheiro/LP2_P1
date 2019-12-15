@@ -20,6 +20,9 @@ public class ContentRow : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI _detailedStartYearTxt = null;
 	[SerializeField] private TextMeshProUGUI _detailedEndYearTxt = null;
 	[SerializeField] private TextMeshProUGUI _detailedGenresTxt = null;
+	[SerializeField] private Button _seePeopleButton = null;
+	[SerializeField] private Button _seeEpisodesButton = null;
+	[SerializeField] private Button _exitDetailedButton = null;
 
 	private IReadable _targetResult;
 
@@ -43,16 +46,38 @@ public class ContentRow : MonoBehaviour
 		_typeTxt.text = info[1];
 	}
 
+	private void ShowDetailedScreen()
+	{
+		UpdateDetailedInfo();
+		_detailedWindow.SetActive(true);
+	}
+
 	private void UpdateDetailedInfo()
 	{
 		string[] detInfo = _targetResult.GetDetailedInfo().Split('\t');
 
 		_detailedNameTxt.text = detInfo[0];
 
-	}
+		if (_targetResult is Person)
+		{
+			_detailedStartYearTxt.text = detInfo[1];
+			_detailedEndYearTxt.text = detInfo[2];
+			_detailedGenresTxt.text = detInfo[3];
 
-private void ShowDetailedScreen()
-	{
+			_detailedTypeTxt.text = "...";
+			_detailedAdultTxt.text = "...";
+			_detailedScoreTxt.text = "...";
+			_detailedVotesTxt.text = "...";
+		}
+		else
+		{
+			_detailedTypeTxt.text = detInfo[1];
+			_detailedAdultTxt.text = detInfo[2];
+			_detailedScoreTxt.text = detInfo[3];
+			_detailedVotesTxt.text = detInfo[4];
+			_detailedStartYearTxt.text = detInfo[5];
+			_detailedEndYearTxt.text = detInfo[6];
+		}
 
 	}
 }
