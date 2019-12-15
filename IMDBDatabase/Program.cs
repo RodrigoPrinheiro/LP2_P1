@@ -8,15 +8,12 @@ namespace IMDBDatabase
 		{
 			//StringTest();
 		}
-
 		private static void ThomasFullDebug(string[] args)
 		{
 			int userMenuDecision = 0;
 			string userSearch = "";
-
 			//IInterface ui = new ConsoleInterface();
 			ConsoleInterface ui = new ConsoleInterface();
-
 			Database db = new Database();
 
 			while (true)
