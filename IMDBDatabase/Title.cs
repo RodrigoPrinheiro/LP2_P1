@@ -2,12 +2,13 @@
 /// @brief This file contains class IMDBDatabase.Title, this the basic data set that is used 
 /// for each title in the IMDB database.
 /// 
-///@author Rodrigo Pinheiro
-///@date 2019
+/// @author Rodrigo Pinheiro & Tomás Franco.
+/// @date 2019
 
 using System;
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
+using System.Text;
 
 namespace IMDBDatabase
 {
@@ -15,7 +16,7 @@ namespace IMDBDatabase
     /// Class representing a dataset for a Title of the IMDB database.
     /// Movies, series, shorts, video games etc...
     /// </summary>
-    public class Title : IEnumerable<Title>, IComparable<Title>, IHasID
+    public class Title : IComparable<Title>, IReadable
     {
         /// <summary>
         /// Collection for all the episodes assign to this Title
@@ -23,14 +24,14 @@ namespace IMDBDatabase
         private ICollection<Title> _episodes;
 
         /// <summary>
+        /// Collection for the crew that worked in this Title
+        /// </summary>
+        private ICollection<Person> _crew;
+
+        /// <summary>
         /// Parent Title for when this title is an episode;
         /// </summary>
         private Title _parentTitle;
-
-        /// <summary>
-        /// Integer ID of this Title
-        /// </summary>
-        public int ID { get; }
 
         /// <summary>
         /// Struct for the rating of this Title
@@ -65,7 +66,7 @@ namespace IMDBDatabase
         /// <summary>
         /// Genres of the Title
         /// </summary>
-        public string[] Genres { get; }
+        public TitleGenre Genres { get; }
 
         /// <summary>
         /// If the title is classified as adult content or not
@@ -77,9 +78,15 @@ namespace IMDBDatabase
         /// </summary>
         public Title ParentTitle { get => _parentTitle; }
 
+        /// <summary>
+        /// Season number this title is assign to (if it's an episode).
+        /// </summary>
         public byte? Season { get; set; }
-        public short? EpisodeNumber { get; set; }
 
+        /// <summary>
+        /// Episode number of this title (if it's an episode).
+        /// </summary>
+        public short? EpisodeNumber { get; set; }
 
         /// <summary>
         /// Constructor that creates an instance of Title
@@ -90,27 +97,42 @@ namespace IMDBDatabase
         /// <param name="type">Type of this Title, movie, series etc...</param>
         /// <param name="genres">Genres of the Title, Drama, Action etc...</param>
         /// <param name="content">Is the content adult or not</param>
-        public Title(int id, Rating rating, string name,
-            string type, string genres, bool content, params string[] year)
+        public Title(Rating rating, string name,
+            string type, string genres, bool content, string[] year)
         {
             // Temporary variable to parse years
             ushort i;
             // Null-able integers so we can have null years in case of a movie etc...
             ushort? startYear = null;
             ushort? endYear = null;
+            string[] cleanGenres;
 
             // Parse the years
             startYear = UInt16.TryParse(year[0], out i) ? i : (ushort?)null;
             endYear = UInt16.TryParse(year[1], out i) ? i : (ushort?)null;
+            cleanGenres = genres.Split(',', ' ', 
+                StringSplitOptions.RemoveEmptyEntries);
 
             // Initialize Variables
-            ID = id;
+            _crew = new HashSet<Person>();
             _rating = rating;
             Name = name;
             Type = (TitleType)Enum.Parse(typeof(TitleType), type, true);
-            Genres = genres.Split(',', ' ', StringSplitOptions.RemoveEmptyEntries);
             AdultContent = content;
             Year = new Tuple<ushort?, ushort?>(startYear, endYear);
+
+            // Set genres
+            foreach (string g in cleanGenres)
+            {
+                // Remove weird characters from string
+                string gWithoutChars = g.Replace("-", "");
+
+                if (gWithoutChars.Equals(@"\N"))
+                    gWithoutChars = "None";
+
+                Genres |= (TitleGenre)Enum.Parse
+                    (typeof(TitleGenre), gWithoutChars, true);
+            }
         }
 
         /// <summary>
@@ -121,7 +143,7 @@ namespace IMDBDatabase
         public void AddEpisode(Title episode, byte? season, short? number)
         {
             // Only creates a list if this title needs an episode list.
-            if (_episodes == null) _episodes = new List<Title>();
+            if (_episodes == null) _episodes = new HashSet<Title>();
             // Ads the title
             _episodes?.Add(episode);
             // Sets parent
@@ -136,21 +158,86 @@ namespace IMDBDatabase
         /// <param name="parent">Parent Title</param>
         public void SetParent(Title parent) => _parentTitle = parent;
 
-        public int CompareTo(Title other)
+        /// <summary>
+        /// Adds a new crew member to the movie's crew
+        /// </summary>
+        /// <param name="person"> Crew member to be added</param>
+        public void AddCrewMember(Person person)
         {
-            return Comparer<float>.Default.
-                Compare(other?.AverageScore ?? 0f, AverageScore);
+            _crew.Add(person);
         }
 
-        public IEnumerator<Title> GetEnumerator() => GetEnumerator();
-
-        // Return all children from this title
-        IEnumerator IEnumerable.GetEnumerator()
+        /// <summary>
+        /// Compares movies by the overall rating
+        /// </summary>
+        /// <param name="other"> The movie to compare this instance to</param>
+        /// <returns> returns a negative number if it's below in order
+        /// of the movie it's being compared to</returns>
+        public int CompareTo(Title other)
         {
-            foreach (Title ep in _episodes)
-            {
-                yield return ep;
-            }
+            int i = Comparer<float>.Default.
+                Compare(other?.AverageScore ?? 0f, AverageScore);
+            if (i != 0) return i;
+
+            i = Comparer<float>.Default.
+                Compare(other?.Votes ?? 0f, Votes);
+            return i;
+        }
+
+        public IReadable[] GetCoupled()
+        {
+            return _episodes.ToArray<IReadable>();
+        }
+
+        /// <summary>
+        /// Gets the basic information to write a title on the screen
+        /// </summary>
+        /// <returns> String containing the Name and type 
+        /// divided by tabs</returns>
+		public string GetBasicInfo()
+		{
+			return $"{Name}\t{Type}";
+		}
+
+        /// <summary>
+        /// Gets the complete information to write a title on the screen
+        /// </summary>
+        /// <returns> String containing the Name, type, content, 
+        /// rating, years and genres of this title divided by tabs</returns>
+		public string GetDetailedInfo()
+		{
+            string adultContent = AdultContent ? "Yes" : "No";
+            string yearOne;
+            string yearTwo;
+            StringBuilder info = new StringBuilder();
+
+            // Append name, type, content and ratings
+            info.Append(Name + "\t");
+            info.Append(Type + "\t");
+            info.Append(adultContent + "\t");
+            info.Append(_rating.Score + "\t");
+            info.Append(_rating.Votes + "\t");
+
+            // Sort year by null
+            yearOne = Year.Item1 == null ? @"\N" : Year.Item1.ToString();
+            yearTwo = Year.Item2 == null ? @"\N" : Year.Item2.ToString();
+            // Append Year
+            info.Append(yearOne + "\t");
+            info.Append(yearTwo + "\t");
+            info.Append(Genres.ToString());
+
+            // Return created string
+            return info.ToString();
+		}
+
+        public IReadable GetParentInfo()
+        {
+            return _parentTitle as IReadable;
+        }
+
+        public IReadable[] GetCrew()
+        {
+            return _crew.ToArray<IReadable>();
         }
     }
 }

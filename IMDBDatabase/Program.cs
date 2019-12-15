@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Threading;
-using System.Linq;
 
 namespace IMDBDatabase
 {
@@ -8,17 +6,43 @@ namespace IMDBDatabase
 	{
 		static void Main(string[] args)
 		{
-			ThomasDebug(args);
+			ThomasFullDebug(args);
 		}
-
-		private static void ThomasDebug(string[] args)
+		private static void ThomasFullDebug(string[] args)
 		{
+			int userMenuDecision = 0;
+			string userSearch = "";
 			IInterface ui = new ConsoleInterface();
-
 			Database db = new Database();
 
-            ui.ShowMsg("Number of TvSeries: " 
-                + db.SearchType("tvseries").Count().ToString());
+			while (true)
+			{
+				ui.RenderStartMenu(out userMenuDecision);
+
+				if (userMenuDecision < 0) break;
+
+				// Check user choice
+				switch (userMenuDecision)
+				{
+					// Name
+					case 0:
+						userSearch = ui.RenderSearchBar("Search by: Name");
+						if (userSearch == null) break;
+						ui.ShowTitleSearchResult(db.SearchName(userSearch));
+						break;
+					// Person
+					case 1:
+						userSearch = ui.RenderSearchBar("Search for: Persons");
+						if (userSearch == null) break;
+                        ui.ShowTitleSearchResult(
+                            db.SearchPersonName(userSearch));
+						break;
+					// Detailed
+					case 2:
+						ui.RenderAdvancedSearch(db);
+						break;
+				}
+			}
 		}
 	}
 }

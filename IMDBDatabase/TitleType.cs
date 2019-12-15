@@ -2,7 +2,7 @@
 /// @brief This file contains the enumeration IMDBDatabase.TitleType, which
 /// defines the type of each Title.
 /// 
-/// @author Rodrigo Pinheiro
+/// @author Rodrigo Pinheiro & Tomás Franco.
 /// @date 2019
 
 namespace IMDBDatabase
@@ -12,6 +12,8 @@ namespace IMDBDatabase
     /// </summary>
     public enum TitleType
     {
+        /// <summary> Ignores this type in the search</summary>
+        Ignore,
         /// <summary> defines Title as Movie</summary>
         Movie,
         /// <summary> defines Title as TvMovie</summary>

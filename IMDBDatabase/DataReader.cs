@@ -9,9 +9,9 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Collections.Generic;
-using System.Threading;
 using System.Text;
 using System.Linq;
+using System.Threading;
 
 namespace IMDBDatabase
 {
@@ -20,7 +20,7 @@ namespace IMDBDatabase
 	/// </summary>
 	class DataReader
 	{
-		// Consts
+		// Constants
 		/// <summary>
 		/// Name of the name_basics file
 		/// </summary>
@@ -56,9 +56,24 @@ namespace IMDBDatabase
 		private readonly string _path;
 
 		/// <summary>
-		/// Ammount of titles
+		/// Amount of titles
 		/// </summary>
-		int _titleAmmount;
+		private int _titleAmmount;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private int _peopleAmmount;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private int _ratingAmmount;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private int _episodeAmmount;
 
 		/// <summary>
 		/// Ui rendering
@@ -70,12 +85,20 @@ namespace IMDBDatabase
 		/// </summary>
 		private Dictionary<int, Rating> _ratingDict;
 
+        /// <summary>
+        /// Episode dictionary using parent title ID as key
+        /// </summary>
         private Dictionary<int, ICollection<Title>> _episodeDict;
 
 		/// <summary>
-		/// List containing titles
+		/// Dictionary containing titles
 		/// </summary>
 		private Dictionary<int, Title> _titleInfo;
+
+		/// <summary>
+		/// People dictionary containing ID as key
+		/// </summary>
+		private ICollection<Person> _peopleInfo;
 
 		/// <summary>
 		/// Constructor that initializes instance variables.
@@ -83,13 +106,15 @@ namespace IMDBDatabase
 		public DataReader()
 		{
 			_ui = new ConsoleInterface();
-			_ratingDict = new Dictionary<int, Rating>();
-            _episodeDict = new Dictionary<int, ICollection<Title>>();
 
 			_path = Environment.GetFolderPath(
 				Environment.SpecialFolder.LocalApplicationData) +
 				"\\MyIMDBSearcher\\";
+
+			_peopleAmmount = 0;
 			_titleAmmount = 0;
+			_ratingAmmount = 0;
+			_episodeAmmount = 0;
 		}
 
 		/// <summary>
@@ -101,24 +126,51 @@ namespace IMDBDatabase
 			try
 			{
 				// Get ratings
-				ReadFromFile(_TITLE_RATINGS_FILENAME, AddRatingTodictionary);
+				_ui.ShowMsg("PROCESS 1/4: Ratings\n");
+                ReadFromFile(_TITLE_RATINGS_FILENAME,
+                    IncrementAmmountOfRatingLines, CreateRatingDict);
+                ReadFromFile(_TITLE_RATINGS_FILENAME, AddRatingTodictionary);
 
-				// Get the ammount of titles
-				ReadFromFile(
-					_TITLE_BASICS_FILENAME, IncrementAmmountOfTitleLines);
-				_titleAmmount++;
+                GC.Collect();
 
-				// Initialize title list with predetermined ammount of titles
-				_titleInfo = new Dictionary<int, Title>(_titleAmmount);
+                // Get titles
+                _ui.ShowMsg("PROCESS 2/4: Titles\n");
+				ReadFromFile(_TITLE_BASICS_FILENAME,
+					IncrementAmmountOfTitleLines, CreateTitleDict);
+                ReadFromFile(_TITLE_BASICS_FILENAME, AddTitleBasicsLineToDict);
 
-				// Get titles into list
-				ReadFromFile(_TITLE_BASICS_FILENAME, AddTitleBasicsLineToList);
+                GC.Collect();
 
-                // Get titles episodes into list
+                // Get title episodes
+                _ui.ShowMsg("PROCESS 3/4: Episodes\n");
+                ReadFromFile(_TITLE_EPISODE_FILENAME,
+                    IncrementAmmountOfEpisodeLines, CreateEpisodeDict);
                 ReadFromFile(_TITLE_EPISODE_FILENAME, AddEpisodeToTitle);
 
+                GC.Collect();
+
+                // Get People
+                _ui.ShowMsg("PROCESS 4/4: People\n");
+				ReadFromFile(_NAME_BASICS_FILENAME,
+					IncrementAmmountOfPeopleLines, CreatePeopleDict);
+                ReadFromFile(_NAME_BASICS_FILENAME, AddPeopleLineToDict);
+
+                GC.Collect();
+
+                Console.Clear();
+
+				// Final feedback
+				_ui.ShowMsg("COMPLETE.\n\n");
+				_ui.ShowMsg($"\nTitle amount is: {_titleInfo.Count}", true);
+				_ui.ShowMsg($"\nEpisodes amount is: {_episodeAmmount}", true);
+				_ui.ShowMsg($"\nPeople amount is: {_peopleInfo.Count}", true);
+				_ui.ShowMsg("\nFile reading successful.\n", true);
+
+				_ui.ShowMsg("\n\nPress any key to continue...", true);
+				Console.ReadKey(true);
+
 				// Return fill title info
-				return _titleInfo.Values.ToList();
+				return _titleInfo.Values;
 			} 
 			// If a file is not found
 			catch (FileNotFoundException e)
@@ -132,22 +184,22 @@ namespace IMDBDatabase
 				_ui.RenderError("\nOops, memory run out... Thats our fault. :)");
 				throw e;
 			}
-
-			finally
-			{
-				_ui.ShowMsg($"\nList size is: {_titleAmmount}", true);
-                _ui.ShowMsg($"\nEpisodes list size is: {_episodeDict.Count}", true);
-				_ui.ShowMsg("\nFile reading successful.\n", true);
-			}
 		}
-		
-		/// <summary>
+
+		/// <summary> 
 		/// Opens, uncompresses and reads a file, then make an action for every
 		/// string line on the read file.
 		/// </summary>
-		/// <param name="fileName">Name of the file to be read.</param>
-		/// <param name="lineAction">Action to be made per line.</param>
-		private void ReadFromFile(string fileName, Action<string> lineAction)
+		/// <param name="fileName">File to open name</param>
+		/// <param name="firstReadLineAction">Action to invoke per line on first 
+		/// file read</param>
+		/// <param name="onEndFirstRead">Action to invoke when first read is 
+		/// over</param>
+		/// <param name="secondReadLineAction">Action to invoke per line on
+		/// second read</param>
+		private void ReadFromFile(string fileName, 
+			Action<string> firstReadLineAction,
+			Action onEndFirstRead = null)
 		{
 			string titleLine = default;
 			string path = _path + fileName;
@@ -158,36 +210,44 @@ namespace IMDBDatabase
 				path, FileMode.Open, FileAccess.Read))
 			{
 				_ui.ShowMsg("File found and opened.", true);
-				Thread.Sleep(200);
-				Console.Clear();
+				_ui.WaitForMilliseconds(200);
 				// Uncompress file
-				_ui.ShowFakeLoadingProcess("Uncompressing");
+				_ui.ShowFakeLoadingProcess("\n\nUncompressing");
 				using (GZipStream gzs = new GZipStream(
 					fs, CompressionMode.Decompress))
 				{
 					_ui.ShowMsg("Uncompressing successful.\n\n", true);
 					Thread.Sleep(200);
-					Console.Clear();
-					// Read file
-					_ui.ShowFakeLoadingProcess("Reading data");
-					using (StreamReader sr = new StreamReader(gzs, Encoding.UTF8))
-					{
-						// Run through all of the raw text data
-						while ((titleLine = sr.ReadLine()) != null)
-						{
-							// Invoke action
-							lineAction.Invoke(titleLine);
-						}
-						_ui.ShowMsg("Data read.\n", true);
-						Thread.Sleep(200);
-						Console.Clear();
-					}
+                    // Read file
+                    using (BufferedStream bs = new BufferedStream(gzs))
+                    {
+                        _ui.ShowFakeLoadingProcess("Reading data");
+                        using (StreamReader sr = new StreamReader(bs, 
+							Encoding.UTF8))
+                        {
+                            // Run through all of the raw text data
+                            while ((titleLine = sr.ReadLine()) != null)
+                            {
+                                // Invoke first read line action
+                                firstReadLineAction.Invoke(titleLine);
+							}
+
+							// Invoke file read action
+							onEndFirstRead?.Invoke();
+							_ui.ShowMsg("Data read.\n", true);
+
+                            Thread.Sleep(200);
+                            Console.Clear();
+
+                            sr.Close();
+                        }
+                    }
 				}
 			}
 		}
 
 		/// <summary>
-		/// Increment ammount of title lines if the line isn't a header. 
+		/// Increment amount of title lines if the line isn't a header. 
 		/// </summary>
 		/// <param name="rawLine">Raw line.</param>
 		private void IncrementAmmountOfTitleLines(string rawLine)
@@ -201,11 +261,78 @@ namespace IMDBDatabase
 		}
 
 		/// <summary>
+		/// Increment amount of Rating lines if the line isn't a header. 
+		/// </summary>
+		/// <param name="rawLine">Raw line.</param>
+		private void IncrementAmmountOfRatingLines(string rawLine)
+		{
+			// Split into words
+			string[] words = rawLine.Split('\t');
+			// Check if it is not a header
+			if (!words[0].StartsWith("tt")) return;
+
+			_ratingAmmount++;
+		}
+
+		/// <summary>
+		/// Increment amount of Episode lines if the line isn't a header. 
+		/// </summary>
+		/// <param name="rawLine">Raw line.</param>
+		private void IncrementAmmountOfEpisodeLines(string rawLine)
+		{
+			// Split into words
+			string[] words = rawLine.Split('\t');
+			// Check if it is not a header
+			if (!words[0].StartsWith("tt")) return;
+
+			_episodeAmmount++;
+		}
+
+		/// <summary>
+		/// Increment amount of People lines if the line isn't a header. 
+		/// </summary>
+		/// <param name="rawLine">Raw line.</param>
+		private void IncrementAmmountOfPeopleLines(string rawLine)
+		{
+			// Split into words
+			string[] words = rawLine.Split('\t');
+			// Check if it is not a header
+			if (!words[0].StartsWith("nm")) return;
+
+			_peopleAmmount++;
+		}
+
+		private void CreateTitleDict()
+		{
+			// Initialize title list with predetermined amount of titles
+			_titleInfo = new Dictionary<int, Title>(_titleAmmount + 1);
+		}
+
+		private void CreateRatingDict()
+		{
+			// Initialize title list with predetermined amount of titles
+			_ratingDict = new Dictionary<int, Rating>(_ratingAmmount + 1);
+		}
+
+		private void CreateEpisodeDict()
+		{
+			// Initialize title list with predetermined amount of titles
+			_episodeDict = new Dictionary<int, ICollection<Title>>
+				( _episodeAmmount + 1);
+		}
+
+		private void CreatePeopleDict()
+		{
+			// Initialize title list with predetermined amount of titles
+			_peopleInfo = new HashSet<Person>(_peopleAmmount + 1);
+		}
+
+		/// <summary>
 		/// Parse raw title basics line data into the Title Info collection.
 		/// </summary>
 		/// <param name="rawLine">Raw line info.</param>
 		/// <returns>The parsed title.</returns>
-		private void AddTitleBasicsLineToList(string rawLine)
+		private void AddTitleBasicsLineToDict(string rawLine)
 		{
 			// Split into words
 			string[] words = rawLine.Split('\t');
@@ -258,15 +385,18 @@ namespace IMDBDatabase
 
 			Rating rating = GetRatingFromID(id);
 
-			// Pass the info, ID is the key to the dic
+			// Pass the info, ID is the key to the dictionary
 			_titleInfo.Add(id ,new Title(
-				id, rating, name, type, genres,
-					isAdult, startYear, endYear));
+                rating, name, type, genres, isAdult, new string[] { startYear, endYear }));
 		}
 
+        /// <summary>
+        /// Parse a raw line and add an episode to its proper parent series
+        /// </summary>
+        /// <param name="rawLine">Raw line information from a line</param>
         private void AddEpisodeToTitle(string rawLine)
         {
-            // episodetconst   parenttconst     season    number
+            // episode tconst   parent tconst     season    number
 
             string[] words = rawLine.Split('\t');
 
@@ -281,7 +411,6 @@ namespace IMDBDatabase
             // save episode ID
             id = ExtractID(words[0]);
             parentID = ExtractID(words[1]);
-
             // Get season number in a null-able byte
             seasonNumber = byte.TryParse(words[2], out byte bResult)
                 ? (byte?)bResult : null;
@@ -298,7 +427,7 @@ namespace IMDBDatabase
                     seasonNumber, 
                     episodeNumber);
             }
-            else if (_titleInfo.ContainsKey(parentID))
+            else if (_titleInfo.ContainsKey(parentID) && !_episodeDict.ContainsKey(parentID))
             {
                 // Create a new list in key value
                 _episodeDict.Add(parentID, new List<Title>());
@@ -313,11 +442,11 @@ namespace IMDBDatabase
             }
         }
 
-        /// <summary>
-        /// Process raw data line into the ratings dictionary.
-        /// </summary>
-        /// <param name="rawLine">Raw data line.</param>
-        private void AddRatingTodictionary(string rawLine)
+		/// <summary>
+		/// Process raw data line into the ratings dictionary.
+		/// </summary>
+		/// <param name="rawLine">Raw data line.</param>
+		private void AddRatingTodictionary(string rawLine)
         {
             // Split into words
             string[] words = rawLine.Split('\t');
@@ -351,7 +480,68 @@ namespace IMDBDatabase
 			// Add to dictionary
 			_ratingDict.Add(id, new Rating(votes, average));
 		}
-		
+
+		/// <summary>
+		/// Process raw data line into the People dictionary.
+		/// </summary>
+		/// <param name="rawLine">Raw line info</param>
+		private void AddPeopleLineToDict(string rawLine)
+		{
+			// nconst			primaryName			birthYear			deathYear       primaryProfession					knownForTitles
+			// nm0000001        Fred Astaire		1899				1987			soundtrack,actor,miscellaneous		tt0043044,tt0072308,tt0053137,tt0050419
+
+			// Split into words
+			string[] words = rawLine.Split('\t');
+			// Check if it is not a header
+			if (!words[0].StartsWith("nm")) return;
+
+			string name = "";
+            ushort parseVar;
+            ushort? birthYear = 0;
+			ushort? deathYear = 0;
+			string professions = default;
+			ICollection<Title> knownForTitles = new HashSet<Title>();
+
+            // Extract info
+            name = words[1];
+            birthYear = UInt16.TryParse(words[2], out parseVar) ?
+                parseVar : (ushort?)null;
+
+            deathYear = UInt16.TryParse(words[3], out parseVar) ?
+                parseVar : (ushort?)null;
+            professions = words[4];
+
+            // Get Titles known for
+            foreach (string titleID in words[5].Split(','))
+            {
+                if (!titleID.Contains(@"\N"))
+                {
+                    int id = ExtractID(titleID);
+                    if (_titleInfo.ContainsKey(id))
+                        knownForTitles.Add(_titleInfo[id]);
+                }
+            }
+
+            // Now that we have the information for 1 person we create it.
+            Person newCrewMember = new Person
+                (name, birthYear, deathYear, professions, knownForTitles);
+
+            // For each title that the person is known for, add it to it's 
+            // crew collection.
+            foreach (Title title in knownForTitles)
+            {
+                title.AddCrewMember(newCrewMember);
+            }
+
+            _peopleInfo.Add(newCrewMember);
+		}
+
+        /// <summary>
+        /// Get the current Person collection
+        /// </summary>
+        /// <returns> Returns an IEnumerable containing IMDBDatabase.Person</returns>
+        public ICollection<Person> GetPeople() => _peopleInfo;
+
 		/// <summary>
 		/// Find the rating data of the requested ID on the dictionary.
 		/// </summary>
@@ -364,7 +554,6 @@ namespace IMDBDatabase
 
 			// Return respective rating
 			return _ratingDict[id];
-
 		}
 
 		/// <summary>
@@ -372,9 +561,7 @@ namespace IMDBDatabase
 		/// </summary>
 		/// <param name="rawTitleId">raw title ID data </param>
 		/// <returns>ID as an int</returns>
-		private int ExtractID(string rawTitleId) =>
-			int.Parse(rawTitleId.Substring(2));
-
-		
+		private int ExtractID(string rawId) =>
+			int.Parse(rawId.Substring(2));
 	}
 }

@@ -1,13 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
 namespace IMDBDatabase
 {
 	public interface IInterface
 	{
-		void ShowMenu();
-		void ShowSearchResult(IEnumerable<Title> results);
+		void RenderStartMenu(out int userDecision);
+		string RenderSearchBar(string searchingBy, bool clear = true);
+		bool? RenderContentChoice();
+		void ShowTitleSearchResult(IReadable[] results);
 		void RenderError(string error);
 		void ShowMsg(string msg, bool slowWrite = false);
 		void ShowFakeLoadingProcess(string fakeProcess);
+		void WaitForMilliseconds(int millisecs);
+        void RenderAdvancedSearch(Database database);
 	}
 }

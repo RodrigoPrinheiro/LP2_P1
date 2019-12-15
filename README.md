@@ -34,8 +34,7 @@ mesmo não sendo exatamente a informação em `string` que o ficheiro apresenta.
 ![titleTypes]
 
 * A classe implemente um _composite design pattern_ modificado para o que é
-necessário nesta solução, assim como o _iterator pattern_ para iterar sobre 
-os possíveis episódios se este for uma série.
+necessário nesta solução.
 
 * O programa ao inicializar vai fazer as seguintes operações antes de deixar o
 utilizador fazer uma pesquisa:
@@ -43,8 +42,55 @@ utilizador fazer uma pesquisa:
   2. Guardar informação lida em dicionários adequados com a chave de ID.
   3. Retirar o resto da informação do ficheiro `title.basics` e preencher
 a classe `Database.cs` com todos os títulos lidos.
+  4. Após retirar esta informação vai criar as relações de episódio entre séries.
+* Agora o utilizador pode fazer as perguntas que quiser à base de dados assim como
+livremente ver a descrição em detalhe de todos os títulos apresentados.
 
- 
+### Design de Classes
+
+##### Principais relações e responsabilidade das classes
+
+A base de dados, como pode ser visto no diagrama, funciona à base de 3 classes
+principais, uma `struct`, e uma enumeração.
+
+**Funcionamento do programa**
+
+* A classe que lê a informação e a distribuí na base de dados é a classe
+`DataReader`, assim que esta recolhe informação suficiente dos ficheiros para
+"montar" um título este é colocado na coleção principal de `Database`.
+
+* `Database` assim tem uma instância privada de `DataReader` que lhe fornece
+a informação necessária. Esta classe funciona a partir de uma coleção genérica
+`ICollection<T>`, esta por sua vez contento `Title` com a informação toda que
+um título possa ter. `Database` além de guardar a informação também contém
+todos os métodos de pergunta de dados (pesquisa por nome, tipo, data, etc...).
+
+* `Title` é a estrutura de dados usada para guardar a informação de um único
+título. Os títulos implementam por sua vez um _Composite Design Pattern_ adaptado
+para guardar os episódios correspondentes, estes por sua vez também são títulos
+com a sua respetiva informação. A classe `Title` é usada pela `DataReader`
+e é parte-todo da classe `Database`
+
+**_Output_ na consola**
+
+O _output_ da informação funciona à base de uma classe `ConsoleInterface`
+e duas interfaces `IReadable` e `IInterface`
+
+* `IReadable` oferece a uma classe que a implementa funcionalidade para ser escrita
+na consola. No nosso caso apenas a classe `Title` necessita desta implementação
+
+* `IInterface` oferece a uma classe a funcionalidade para imprimir a interface
+do utilizador no ecrã, necessita de `IReadable`. A classe que implementa esta
+interface é a `ConsoleInterface`.
+
+* Por fim `ConsoleInterface` é onde estão todos os métodos e informação para
+imprimir no ecrã a base de dados corretamente. Esta funciona à base de constantes
+e métodos privados, sendo apenas os públicos os de `IInterface`.
+
+Esta solução foi pensada de forma a que se `IReadable` e `IInterface` fossem
+removidos por completo, teriamos apenas a lógica do funcionamento, sem qualquer
+parte visual. Dado que com a implementação das mesmas podemos ver no UML o
+isolamento da lógica que as mesmas criam.
 
 ### Diagrama UML
 ![diagrama]
