@@ -241,8 +241,7 @@ namespace IMDBDatabase
 			playerDecision = finalDecision;
 		}
 
-		public Tuple<string, TitleType, TitleGenre, bool?, ushort?, ushort?> 
-			RenderAdvancedSearch()
+		public void RenderAdvancedSearch(Database db)
 		{
 			//string name = null,
 			//TitleType type = 0,
@@ -301,6 +300,7 @@ namespace IMDBDatabase
 				#endregion
 
 				while (!leaveSwitch)
+				{
 					switch (WaitForAnyUserKeyPress().Key)
 					{
 						// Selection Up
@@ -320,27 +320,32 @@ namespace IMDBDatabase
 								// Name
 								case 0:
 									name = RenderSearchBar("Insert Name:");
+									Console.WriteLine(name);
 									break;
 								// Type
 								case 1:
 									type = (TitleType)RenderTypeChoice();
+									Console.WriteLine(type.ToString());
 									break;
 								// Genre
 								case 2:
 									genre = (TitleGenre)RenderGenreChoice();
+									Console.WriteLine(genre.ToString());
 									break;
 								// Content
 								case 3:
 									content = RenderContentChoice();
+									Console.WriteLine(content);
 									break;
 								// Start year
 								case 4:
 									ushort start = 0;
 									UInt16.TryParse(
-										RenderSearchBar("Insert Start year"), 
+										RenderSearchBar("Insert Start year"),
 										out start);
 									if (start != 0)
 										startYear = start;
+									Console.WriteLine(start);
 									break;
 								// End year
 								case 5:
@@ -350,6 +355,7 @@ namespace IMDBDatabase
 										out end);
 									if (end != 0)
 										endYear = end;
+									Console.WriteLine(end);
 									break;
 								// Search
 								case 6:
@@ -364,13 +370,11 @@ namespace IMDBDatabase
 							leaveDetailedSearch = true;
 							break;
 					};
+				}
 			}
 
-			Tuple<string, TitleType, TitleGenre, bool?, ushort?, ushort?>
-			results = new Tuple<string, TitleType, TitleGenre, bool?, ushort?, ushort?>
-			(name, type, genre, content, startYear, endYear);
-
-			return results;
+			ShowTitleSearchResult(
+				db.AdvancedSearch(name, type, genre, content, startYear, endYear));
 		}
 
 		private int RenderTypeChoice()
@@ -435,7 +439,7 @@ namespace IMDBDatabase
 						break;
 				};
 
-			return _selectionArrowIndex;
+			return _selectionArrowIndex + 1;
 		}
 
 		private TitleGenre RenderGenreChoice()
@@ -462,7 +466,7 @@ namespace IMDBDatabase
 					Write('\n');
 			}
 			RenderMenu(_SEARCH_MENU_SUBTITLE_);
-			RenderSearchBar("Genres (split by spaces using index)");
+			RenderSearchBar("Genres (split by spaces using index)", false);
 
 			foreach(string index in userChoice.Split(' '))
 			{
@@ -622,7 +626,7 @@ namespace IMDBDatabase
                             // Show detailed info of selected title
                             case ConsoleKey.Enter:
                                 ShowDetailedTitleInfo(
-                                    results[i -
+                                    results?[i -
                                     ((_MAX_SEARCH_RESULT_DISPLAY_TITLES - 1) -
                                     _selectionArrowIndex)]);
                                 break;

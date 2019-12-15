@@ -59,6 +59,7 @@ namespace IMDBDatabase
             bool? content = null, 
             ushort? startYear = null, ushort? endYear = null)
         {
+			Console.WriteLine("AAAAAAAAAAAAAAAAAA");
             // Create a list for the results (list so we can use Sort())
             List<Title> result = new List<Title>();
             if (name != null)

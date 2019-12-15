@@ -6,7 +6,7 @@ namespace IMDBDatabase
 	{
 		static void Main(string[] args)
 		{
-			//StringTest();
+			ThomasFullDebug(args);
 		}
 		private static void ThomasFullDebug(string[] args)
 		{
@@ -39,7 +39,12 @@ namespace IMDBDatabase
 						break;
 					// Detailed
 					case 2:
-						ui.RenderAdvancedSearch();
+						ui.RenderAdvancedSearch(db);
+						
+						//ui.ShowTitleSearchResult(
+						//db.AdvancedSearch(
+						//	results.Item1, results.Item2, results.Item3, 
+						//	results.Item4, results.Item5, results.Item6));
 						break;
 				}
 			}
