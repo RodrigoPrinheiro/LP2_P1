@@ -6,7 +6,7 @@
 /// @date 2019
 
 using System;
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 
@@ -16,7 +16,7 @@ namespace IMDBDatabase
     /// Class representing a dataset for a Title of the IMDB database.
     /// Movies, series, shorts, video games etc...
     /// </summary>
-    public class Title : IEnumerable<Title>, IComparable<Title>, IReadable
+    public class Title : IComparable<Title>, IReadable
     {
         /// <summary>
         /// Collection for all the episodes assign to this Title
@@ -98,7 +98,7 @@ namespace IMDBDatabase
         /// <param name="genres">Genres of the Title, Drama, Action etc...</param>
         /// <param name="content">Is the content adult or not</param>
         public Title(Rating rating, string name,
-            string type, string genres, bool content, params string[] year)
+            string type, string genres, bool content, string[] year)
         {
             // Temporary variable to parse years
             ushort i;
@@ -174,19 +174,18 @@ namespace IMDBDatabase
         /// of the movie it's being compared to</returns>
         public int CompareTo(Title other)
         {
-            return Comparer<float>.Default.
+            int i = Comparer<float>.Default.
                 Compare(other?.AverageScore ?? 0f, AverageScore);
+            if (i != 0) return i;
+
+            i = Comparer<float>.Default.
+                Compare(other?.Votes ?? 0f, Votes);
+            return i;
         }
 
-        public IEnumerator<Title> GetEnumerator() => GetEnumerator();
-
-        // Return all children from this title
-        IEnumerator IEnumerable.GetEnumerator()
+        public IReadable[] GetCoupled()
         {
-            foreach (Title ep in _episodes)
-            {
-                yield return ep;
-            }
+            return _episodes.ToArray<IReadable>();
         }
 
         /// <summary>
@@ -229,5 +228,10 @@ namespace IMDBDatabase
             // Return created string
             return info.ToString();
 		}
-	}
+
+        public IReadable GetParentInfo()
+        {
+            return _parentTitle as IReadable;
+        }
+    }
 }

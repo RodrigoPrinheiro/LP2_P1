@@ -9,7 +9,7 @@ public class DatabaseHolder : MonoBehaviour
 
 	private Database _db;
 
-	void Start()
+	void Awake()
     {
 		_db = new Database();
 	}
@@ -17,8 +17,7 @@ public class DatabaseHolder : MonoBehaviour
 	public void AdvancedTitleSearch(string name, TitleType type, TitleGenre genre, 
 		bool content, ushort startYear, ushort endYear)
 	{
-		IReadable[] results = 
-			_db.AdvancedSearch(name, type, genre, content, startYear, endYear);
+		IReadable[] results = _db.AdvancedSearch(name, type, genre, content, startYear, endYear);
 
 		Instantiate(_scrollPrefab).GetComponent<ResultScroll>().Initialize(results);
 	}

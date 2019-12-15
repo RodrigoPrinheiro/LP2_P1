@@ -16,7 +16,7 @@ namespace IMDBDatabase
     [Flags]
     public enum TitleGenre
     {
-        /// <summary> defines Genre as Action </summary>
+        /// <summary> defines Genre as Ignore </summary>
         Ignore = 0b_0000_0000_0000_0000_0000_0000_0000_0000,
         /// <summary> defines Genre as Action </summary>
         Action = 0b_0000_0000_0000_0000_0000_0000_0000_0001,        // 1
