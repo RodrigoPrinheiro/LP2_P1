@@ -75,9 +75,11 @@ namespace IMDBDatabase
                 query = SearchEndYear((ushort)endYear, query);
 
             // Sort by average rating (popularity)
-            //(query as List<Title>).Sort();
+            List<Title> titles = query.ToList();
+            titles.Sort();
+
             // Return IReadable Array
-            return query.ToArray() as IReadable[];
+            return titles.ToArray() as IReadable[];
         }
 
         /// <summary>
@@ -106,6 +108,20 @@ namespace IMDBDatabase
             return source.Where(x => x.Name.Contains
                 (nameContent, 
 				StringComparison.CurrentCultureIgnoreCase));
+        }
+        
+        public IReadable[] SearchName(string nameContent)
+        {
+            return _titles.Where(x => x.Name.Contains
+            (nameContent, StringComparison.CurrentCultureIgnoreCase)).
+            ToArray<IReadable>();
+        }
+
+        public IReadable[] SearchPersonName(string name)
+        {
+            return _people.Where(x => x.Name.Contains
+            (name, StringComparison.CurrentCultureIgnoreCase)).
+            ToArray<IReadable>();
         }
 
         /// <summary>

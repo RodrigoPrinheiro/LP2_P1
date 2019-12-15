@@ -6,7 +6,7 @@
 /// @date 2019
 
 using System;
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 
@@ -16,8 +16,7 @@ namespace IMDBDatabase
     /// Class representing a dataset for a Title of the IMDB database.
     /// Movies, series, shorts, video games etc...
     /// </summary>
-    public class Title : IEnumerable<Title>, IComparable<Title>, IReadable, 
-        IEquatable<Title>
+    public class Title : IComparable<Title>, IReadable
     {
         /// <summary>
         /// Collection for all the episodes assign to this Title
@@ -185,15 +184,9 @@ namespace IMDBDatabase
             return i;
         }
 
-        public IEnumerator<Title> GetEnumerator() => GetEnumerator();
-
-        // Return all children from this title
-        IEnumerator IEnumerable.GetEnumerator()
+        public IReadable[] GetCoupled()
         {
-            foreach (Title ep in _episodes)
-            {
-                yield return ep;
-            }
+            return _episodes.ToArray<IReadable>();
         }
 
         /// <summary>
@@ -237,9 +230,9 @@ namespace IMDBDatabase
             return info.ToString();
 		}
 
-        public bool Equals(Title other)
+        public IReadable GetParentInfo()
         {
-            return Name.Equals(other.Name);
+            return _parentTitle as IReadable;
         }
     }
 }

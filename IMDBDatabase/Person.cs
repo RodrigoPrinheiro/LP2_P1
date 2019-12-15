@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IMDBDatabase
 {
@@ -51,16 +52,13 @@ namespace IMDBDatabase
 		}
 
         /// <summary>
-        /// Public property that returns an Enumerable of the Movies the person
+        /// Method that returns an Enumerable of the Movies the person
         /// is known for
         /// </summary>
-		public IEnumerable<Title> Movies
+        /// <return> IReadable array with the information of each movie</return>
+		public IReadable[] GetCoupled()
         {
-			get
-			{
-				foreach (Title id in _movies)
-					yield return id;
-			}
+            return _movies.ToArray<IReadable>();
 		}
 
         /// <summary>
@@ -87,6 +85,11 @@ namespace IMDBDatabase
             deathYear = Year.Item2 == null ? @"\N" : Year.Item1.ToString();
 
             return $"{Name}\t{birthYear}\t{deathYear}\t{Professions}";
+        }
+
+        public IReadable GetParentInfo()
+        {
+            return null;
         }
     }
 }

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IMDBDatabase
+﻿namespace IMDBDatabase
 {
 	public interface IReadable
 	{
 		string GetBasicInfo();
 		string GetDetailedInfo();
+        IReadable GetParentInfo();
+        IReadable[] GetCoupled();
 	}
 }

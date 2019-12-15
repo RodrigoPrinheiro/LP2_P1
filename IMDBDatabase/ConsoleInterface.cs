@@ -72,7 +72,7 @@ namespace IMDBDatabase
 		/// Search menu detailed possible options.
 		/// </summary>
 		private const string _TITLE_DETAILED_MENU_TXT =
-            " C : Show Title Crew\t\t\t\tE: Show Episode Title Search\n" +
+            " C : Show Title Crew\t\t\t\tE: Show Coupled Title\n" +
             " P : Go to Parent Title\t\t\t\tESC : Exit Search";
 		/// <summary>
 		/// Title info sub-info.
@@ -522,8 +522,8 @@ namespace IMDBDatabase
 
         public void ShowTitleSearchResult(IReadable[] results)
         {
-			_selectionArrowIndex = 0;
-
+            if (results == null) return;
+            _selectionArrowIndex = 0;
             bool exitSearchResult = false;
 
 			byte headerTopPosition = 11;
@@ -577,7 +577,7 @@ namespace IMDBDatabase
                 yIndex++;
                 resultAmmount++;
 
-                // Max result ammount reached
+                // Max result amount reached
                 if (resultAmmount % _MAX_SEARCH_RESULT_DISPLAY_TITLES == 0)
                 {
                     bool leaveSwitch = false;
@@ -648,6 +648,8 @@ namespace IMDBDatabase
             byte headerLeftPosition = 10;
             byte typeXPos = (byte)(headerLeftPosition + 85);
             byte yIndex = 1;
+            bool leaveSwitch = false;
+
             Beep();
             Clear();
 
@@ -659,8 +661,6 @@ namespace IMDBDatabase
             RenderMenu(_TITLE_DETAILED_MENU_TXT);
             RenderTitleInfoTable(headerTopPosition, headerLeftPosition,
                 typeXPos, 1, 9, titleHeader);
-
-
 
             // Write info
             for (int i = 1; i < titleDetailedInfo.Length; i++)
@@ -675,6 +675,22 @@ namespace IMDBDatabase
                     headerTopPosition + yIndex - 1 + i);
 
                 Write(titleDetailedInfo[i]);
+            }
+
+            while (!leaveSwitch)
+            {
+                switch (WaitForAnyUserKeyPress().Key)
+                {
+                    case ConsoleKey.E:
+                        ShowTitleSearchResult(titleInfo.GetCoupled());
+                        break;
+                    case ConsoleKey.P:
+                        ShowDetailedTitleInfo(titleInfo.GetParentInfo());
+                        break;
+                    case ConsoleKey.Escape:
+                        leaveSwitch = true;
+                        break;
+                }
             }
         }
 
