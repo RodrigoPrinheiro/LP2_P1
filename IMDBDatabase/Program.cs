@@ -4,11 +4,18 @@ namespace IMDBDatabase
 {
 	class Program
 	{
+
 		static void Main(string[] args)
 		{
-			ThomasFullDebug(args);
+			Program prog = new Program();
+
+			prog.Start();
 		}
-		private static void ThomasFullDebug(string[] args)
+
+		/// <summary>
+		/// Main program loop
+		/// </summary>
+		private void Start()
 		{
 			int userMenuDecision = 0;
 			string userSearch = "";

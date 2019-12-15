@@ -168,7 +168,7 @@ namespace IMDBDatabase
         /// <summary>
         /// Render msg with red background.
         /// </summary>
-        /// <param name="error"></param>
+        /// <param name="error">msg to display.</param>
         public void RenderError(string error)
         {
             BackgroundColor = ConsoleColor.Red;
@@ -178,6 +178,10 @@ namespace IMDBDatabase
             BackgroundColor = _DEFAULT_BG_COLOR;
         }
 
+		/// <summary>
+		/// Render the Start Menu
+		/// </summary>
+		/// <param name="playerDecision"></param>
         public void RenderStartMenu(out int playerDecision)
         {
             Clear();
@@ -244,6 +248,10 @@ namespace IMDBDatabase
             playerDecision = finalDecision;
         }
 
+		/// <summary>
+		/// Render Advanced search menu
+		/// </summary>
+		/// <param name="db">Main Database</param>
         public void RenderAdvancedSearch(Database db)
         {
             string name = null;
@@ -370,6 +378,10 @@ namespace IMDBDatabase
                 db.AdvancedSearch(name, type, genre, content, startYear, endYear));
         }
 
+		/// <summary>
+		/// Render type choice menu
+		/// </summary>
+		/// <returns>Final type</returns>
         private int RenderTypeChoice()
         {
             bool leaveSwitch = false;
@@ -435,6 +447,10 @@ namespace IMDBDatabase
             return _selectionArrowIndex + 1;
         }
 
+		/// <summary>
+		/// Renders genre choice menu
+		/// </summary>
+		/// <returns>Final genre</returns>
         private TitleGenre RenderGenreChoice()
         {
             string userChoice = "";
@@ -474,12 +490,25 @@ namespace IMDBDatabase
 
             return finalGenre;
         }
+		
+		/// <summary>
+		/// Get the size of Types enum
+		/// </summary>
+		/// <returns>Size of enum</returns>
         private byte GetTypeSize() =>
             (byte)Enum.GetNames(typeof(TitleType)).Length;
 
-        private string GetTypeNameByIndex(int index) =>
+		/// <summary>
+		/// Get Type name on Enum by index
+		/// </summary>
+		/// <param name="index">Enum Index</param>
+		/// <returns>Type Name</returns>
+		private string GetTypeNameByIndex(int index) =>
             ((TitleType)index).ToString();
 
+		/// <summary>
+		/// Render IMDB logo
+		/// </summary>
         private void RenderIMDB()
         {
             byte headerLeftPosition = (byte)
@@ -494,6 +523,10 @@ namespace IMDBDatabase
             ResetColor();
         }
 
+		/// <summary>
+		/// Render info menu
+		/// </summary>
+		/// <param name="text">Info</param>
         public void RenderMenu(string text)
         {
             RenderSolidBackgroundBlock(
@@ -515,6 +548,11 @@ namespace IMDBDatabase
             BackgroundColor = _DEFAULT_BG_COLOR;
         }
 
+		/// <summary>
+		/// Display a message
+		/// </summary>
+		/// <param name="msg">Msg to display</param>
+		/// <param name="slowWrite">Slow write enabled</param>
         public void ShowMsg(string msg, bool slowWrite = false)
         {
             if (slowWrite)
@@ -523,6 +561,10 @@ namespace IMDBDatabase
                 Write(msg);
         }
 
+		/// <summary>
+		/// Display all given results
+		/// </summary>
+		/// <param name="results">Results to display</param>
         public void ShowTitleSearchResult(IReadable[] results)
         {
             if (results == null) return;
@@ -641,6 +683,10 @@ namespace IMDBDatabase
             Clear();
         }
 
+		/// <summary>
+		/// Show detailed info
+		/// </summary>
+		/// <param name="titleInfo">title to display info</param>
         public void ShowDetailedTitleInfo(IReadable titleInfo = null)
         {
             if (titleInfo == null) return;
@@ -704,6 +750,10 @@ namespace IMDBDatabase
             }
         }
 
+		/// <summary>
+		/// Write fake loading process
+		/// </summary>
+		/// <param name="fakeProcess">Text to fake</param>
         public void ShowFakeLoadingProcess(string fakeProcess)
         {
             SlowWrite(fakeProcess);
@@ -722,6 +772,12 @@ namespace IMDBDatabase
                 _MAX_RANDOM_DOT_WRITE_TIME));
         }
 
+		/// <summary>
+		/// Render search bar
+		/// </summary>
+		/// <param name="searchingBy">Header</param>
+		/// <param name="clear">Toggle clear before render</param>
+		/// <returns></returns>
         public string RenderSearchBar(string searchingBy, bool clear = true)
         {
             if (clear)
@@ -790,6 +846,10 @@ namespace IMDBDatabase
             return userTxt;
         }
 
+		/// <summary>
+		/// Render content choice menu
+		/// </summary>
+		/// <returns>Choice</returns>
         public bool? RenderContentChoice()
         {
             Clear();
@@ -848,15 +908,25 @@ namespace IMDBDatabase
             return searchForAdult;
         }
 
+		/// <summary>
+		/// Wait for any user input
+		/// </summary>
+		/// <returns>User input key</returns>
         private ConsoleKeyInfo WaitForAnyUserKeyPress() => ReadKey(true);
 
-        public string WaitForUserTextInput() => ReadLine();
-
+		/// <summary>
+		/// Wait for milliseconds
+		/// </summary>
+		/// <param name="milliseconds">time to wait</param>
         public void WaitForMilliseconds(int milliseconds)
         {
             Thread.Sleep(milliseconds);
         }
 
+		/// <summary>
+		/// Slow write text
+		/// </summary>
+		/// <param name="text">text to slow write</param>
         private void SlowWrite(string text)
         {
             foreach (char letter in text)
@@ -868,6 +938,12 @@ namespace IMDBDatabase
             }
         }
 
+		/// <summary>
+		/// Render solid background color on given position
+		/// </summary>
+		/// <param name="color">Block color</param>
+		/// <param name="topLeft">top left position</param>
+		/// <param name="bottomRight">bottom right position</param>
         private void RenderSolidBackgroundBlock(
             ConsoleColor color, int[] topLeft, int[] bottomRight)
         {
@@ -890,6 +966,15 @@ namespace IMDBDatabase
             WriteLine();
         }
 
+		/// <summary>
+		/// Render title info table
+		/// </summary>
+		/// <param name="headerTopPosition"></param>
+		/// <param name="headerLeftPosition"></param>
+		/// <param name="typeXpos"></param>
+		/// <param name="currentMinI"></param>
+		/// <param name="currentMaxI"></param>
+		/// <param name="titleName"></param>
         private void RenderTitleInfoTable(
             byte headerTopPosition, byte headerLeftPosition, byte typeXpos,
             int currentMinI, int currentMaxI, string titleName)
@@ -911,6 +996,15 @@ namespace IMDBDatabase
                 new int[2] { 25, 100 });
         }
 
+		/// <summary>
+		/// Render search result table
+		/// </summary>
+		/// <param name="headerTopPosition"></param>
+		/// <param name="headerLeftPosition"></param>
+		/// <param name="typeXPos"></param>
+		/// <param name="lengh"></param>
+		/// <param name="currentMinI"></param>
+		/// <param name="maxCurrentI"></param>
         private void RenderSearchResultTable(
             byte headerTopPosition, byte headerLeftPosition, byte typeXPos,
             int lengh, int currentMinI, int maxCurrentI)
@@ -932,6 +1026,15 @@ namespace IMDBDatabase
                 lengh, currentMinI, maxCurrentI);
         }
 
+		/// <summary>
+		/// Update Result viewport
+		/// </summary>
+		/// <param name="headerTopPosition"></param>
+		/// <param name="headerLeftPosition"></param>
+		/// <param name="typeXPos"></param>
+		/// <param name="lengh"></param>
+		/// <param name="currentMinI"></param>
+		/// <param name="maxCurrentI"></param>
         private void UpdateResultViewport(
             byte headerTopPosition, byte headerLeftPosition, byte typeXPos,
             int lengh, int currentMinI, int maxCurrentI)
@@ -963,12 +1066,23 @@ namespace IMDBDatabase
             ForegroundColor = _DEFAULT_FG_COLOR;
         }
 
+		/// <summary>
+		/// Change cursor positon
+		/// </summary>
+		/// <param name="left">Left position</param>
+		/// <param name="top">Top position</param>
         private void SetCursorPosition(int? left = null, int? top = null)
         {
             if (left != null) CursorLeft = (int)left;
             if (top != null) CursorTop = (int)top;
         }
 
+		/// <summary>
+		/// Center given string
+		/// </summary>
+		/// <param name="text">Text to center</param>
+		/// <param name="max">max size</param>
+		/// <returns></returns>
         private string CenterString(string text, byte max)
         {
             if (text.Length < max)
@@ -986,6 +1100,11 @@ namespace IMDBDatabase
 
         }
 
+		/// <summary>
+		/// Render selection arrow
+		/// </summary>
+		/// <param name="incrementIndex">should increment index</param>
+		/// <param name="maxIndex">Max index</param>
         private void RenderVerticalSelectionArrow(bool incrementIndex,
             byte maxIndex = _MAX_SEARCH_RESULT_DISPLAY_TITLES)
         {
