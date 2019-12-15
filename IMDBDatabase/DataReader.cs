@@ -163,6 +163,7 @@ namespace IMDBDatabase
 				_ui.ShowMsg("\nFile reading successful.\n", true);
 
 				_ui.ShowMsg("\n\nPress any key to continue...", true);
+				Console.ReadKey(true);
 
 				// Return fill title info
 				return _titleInfo.Values.ToList();

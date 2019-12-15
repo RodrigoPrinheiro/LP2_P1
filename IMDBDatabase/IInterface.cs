@@ -5,7 +5,7 @@ namespace IMDBDatabase
 	public interface IInterface
 	{
 		void RenderStartMenu(out int userDecision);
-		string RenderSearchBar(string searchingBy);
+		string RenderSearchBar(string searchingBy, bool clear = true);
 		bool? RenderContentChoice();
 		void ShowTitleSearchResult(IReadable[] results);
 		void RenderError(string error);

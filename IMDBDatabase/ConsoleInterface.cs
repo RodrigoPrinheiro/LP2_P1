@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Collections.Generic;
 using System.Text;
 using static System.Console;
 
@@ -23,15 +24,15 @@ namespace IMDBDatabase
 		/// <summary>
 		/// Maximum slow write letter delay.
 		/// </summary>
-		private const byte _MAX_RANDOM_SLOW_WRITE_TIME = 15;
+		private const byte _MAX_RANDOM_SLOW_WRITE_TIME = 10;
 		/// <summary>
 		/// Minimum dot write delay.
 		/// </summary>
-        private const byte _MIN_RANDOM_DOT_WRITE_TIME = 200;
+        private const byte _MIN_RANDOM_DOT_WRITE_TIME = 15;
 		/// <summary>
 		/// Maximum dot write delay.
 		/// </summary>
-        private const int _MAX_RANDOM_DOT_WRITE_TIME = 380;
+        private const int _MAX_RANDOM_DOT_WRITE_TIME = 30;
 
 		/// <summary>
 		/// Max number of chars of the title name to display on screen.
@@ -54,8 +55,7 @@ namespace IMDBDatabase
 		/// Possible start menu choices
 		/// </summary>
         private static readonly string[] _START_MENU_CHOICES =
-            {"Name", "Type", "Type of Content",
-            "Score", "Votes", "Year", "Genres", "People"};
+            {"Title Name", "People", "Advanced Search"};
 		/// <summary>
 		/// Search menu possible options.
 		/// </summary>
@@ -86,6 +86,19 @@ namespace IMDBDatabase
 		private static readonly string _SEARCH_BAR_MENU_TXT =
 			"\t\t\t\t\tEnter: Search\n" +
 			"\t\t\t\t\t  Esc: Exit";
+
+		private static readonly string[] _ADVANCED_SEARCH_OPTIONS =
+			{"Name", "Type", "Genre", "Adult Content",
+			"Start Year", "End Year", "##### SEARCH FOR TITLES! ####"};
+
+		private static readonly string[] _GENRES =
+		{
+			"Action", "Adventure", "Animation", "Biography", "Comedy", "Crime",
+			"Documentary", "Drama", "Family", "Fantasy", "FilmNoir", "GameShow",
+			"History", "Horror", "Music", "Musical", "Mystery", "News",
+			"RealityTv", "Romance", "SciFi", "Sport", "TalkShow", "Thriller",
+			"War", "Western", "Short", "Adult"
+		};
 
 		/// <summary>
 		/// IMDB logo.
@@ -207,11 +220,11 @@ namespace IMDBDatabase
 				{
 					// Selection Up
 					case ConsoleKey.UpArrow:
-						RenderVerticalSelectionArrow(false, 8);
+						RenderVerticalSelectionArrow(false, 3);
 						break;
 					// Selection Down
 					case ConsoleKey.DownArrow:
-						RenderVerticalSelectionArrow(true, 8);
+						RenderVerticalSelectionArrow(true, 3);
 						break;
 					// User choice
 					case ConsoleKey.Enter:
@@ -228,7 +241,250 @@ namespace IMDBDatabase
 			playerDecision = finalDecision;
 		}
 
-        private void RenderIMDB()
+		public Tuple<string, TitleType, TitleGenre, bool?, ushort?, ushort?> 
+			RenderAdvancedSearch()
+		{
+			//string name = null,
+			//TitleType type = 0,
+			//TitleGenre genre = 0,
+			//bool? content = null,
+			//ushort? startYear = null, 
+			//ushort? endYear = null
+
+			string name = null;
+			TitleType type = 0;
+			TitleGenre genre = 0;
+			bool? content = null;
+			ushort? startYear = null;
+			ushort? endYear = null;
+
+			bool leaveDetailedSearch = false;
+
+			while (!leaveDetailedSearch)
+			{
+				#region PRINTING REMOVE LATER
+				Clear();
+
+				byte leftPos = 39;
+				byte topPos = 17;
+				byte yIndex = 1;
+
+				bool leaveSwitch = false;
+
+				RenderMenu(_SEARCH_MENU_SUBTITLE_);
+				RenderSolidBackgroundBlock(
+					ConsoleColor.Yellow,
+					new int[] { topPos, leftPos },
+					new int[] { topPos + 17, 72 });
+
+				SetCursorPosition(leftPos + 4, topPos + 1);
+				BackgroundColor = _DEFAULT_TITLE_COLOR;
+				Write($"{CenterString("Set parameters:", 25),25}");
+				ResetColor();
+
+				for (int i = 0; i < _ADVANCED_SEARCH_OPTIONS.Length * 2; i++)
+				{
+					if (_ADVANCED_SEARCH_OPTIONS.Length > i)
+					{
+						string paddedHeader = null;
+						SetCursorPosition(leftPos + 1, topPos + 2 + yIndex++ + i);
+						paddedHeader = CenterString(_ADVANCED_SEARCH_OPTIONS[i], 31);
+						Write($"{paddedHeader,31}");
+					}
+				}
+
+				_selectionArrowIndex = 0;
+				_selectionArrowPos[0] = leftPos - 2;
+				_selectionArrowPos[1] = topPos + 3;
+				RenderVerticalSelectionArrow(false);
+
+				#endregion
+
+				while (!leaveSwitch)
+					switch (WaitForAnyUserKeyPress().Key)
+					{
+						// Selection Up
+						case ConsoleKey.UpArrow:
+							RenderVerticalSelectionArrow(false,
+								(byte)_ADVANCED_SEARCH_OPTIONS.Length);
+							break;
+						// Selection Down
+						case ConsoleKey.DownArrow:
+							RenderVerticalSelectionArrow(true,
+								(byte)_ADVANCED_SEARCH_OPTIONS.Length);
+							break;
+						// User choice
+						case ConsoleKey.Enter:
+							switch (_selectionArrowIndex)
+							{
+								// Name
+								case 0:
+									name = RenderSearchBar("Insert Name:");
+									break;
+								// Type
+								case 1:
+									type = (TitleType)RenderTypeChoice();
+									break;
+								// Genre
+								case 2:
+									genre = (TitleGenre)RenderGenreChoice();
+									break;
+								// Content
+								case 3:
+									content = RenderContentChoice();
+									break;
+								// Start year
+								case 4:
+									ushort start = 0;
+									UInt16.TryParse(
+										RenderSearchBar("Insert Start year"), 
+										out start);
+									if (start != 0)
+										startYear = start;
+									break;
+								// End year
+								case 5:
+									ushort end = 0;
+									UInt16.TryParse(
+										RenderSearchBar("Insert End year"),
+										out end);
+									if (end != 0)
+										endYear = end;
+									break;
+								// Search
+								case 6:
+									leaveDetailedSearch = true;
+									break;
+							}
+							leaveSwitch = true;
+							break;
+						// Exit search
+						case ConsoleKey.Escape:
+							leaveSwitch = true;
+							leaveDetailedSearch = true;
+							break;
+					};
+			}
+
+			Tuple<string, TitleType, TitleGenre, bool?, ushort?, ushort?>
+			results = new Tuple<string, TitleType, TitleGenre, bool?, ushort?, ushort?>
+			(name, type, genre, content, startYear, endYear);
+
+			return results;
+		}
+
+		private int RenderTypeChoice()
+		{
+			bool leaveSwitch = false;
+
+			Clear();
+			byte enumLength = GetTypeSize();
+
+			byte leftPos = 39;
+			byte topPos = (byte)(21 - enumLength);
+			byte yIndex = 1;
+
+			RenderMenu(_SEARCH_MENU_SUBTITLE_);
+			RenderSolidBackgroundBlock(
+				ConsoleColor.DarkYellow,
+				new int[] { topPos, leftPos },
+				new int[] { topPos + enumLength * 2 + 1, 72 });
+
+			SetCursorPosition(leftPos + 4, topPos + 1);
+			BackgroundColor = _DEFAULT_TITLE_COLOR;
+			Write($"{CenterString("Choose Type", 25),25}");
+			ResetColor();
+
+			for (int i = 0; i < enumLength * 2; i++)
+			{
+				if (enumLength > i && i > 0)
+				{
+					string paddedHeader = GetTypeNameByIndex(i);
+					SetCursorPosition(leftPos + 1, topPos + 1 + yIndex++ + i);
+					if (paddedHeader != null)
+						paddedHeader = CenterString(paddedHeader, 31);
+					Write($"{paddedHeader,31}");
+				}
+			}
+
+			_selectionArrowIndex = 0;
+			_selectionArrowPos[0] = leftPos - 2;
+			_selectionArrowPos[1] = topPos + 3;
+			RenderVerticalSelectionArrow(false);
+
+			while (!leaveSwitch)
+				switch (WaitForAnyUserKeyPress().Key)
+				{
+					// Selection Up
+					case ConsoleKey.UpArrow:
+						RenderVerticalSelectionArrow(false, 
+							(byte)(enumLength - 1));
+						break;
+					// Selection Down
+					case ConsoleKey.DownArrow:
+						RenderVerticalSelectionArrow(true, 
+							(byte)(enumLength - 1));
+						break;
+					// User choice
+					case ConsoleKey.Enter:
+						leaveSwitch = true;
+						break;
+					// Exit search
+					case ConsoleKey.Escape:
+						leaveSwitch = true;
+						break;
+				};
+
+			return _selectionArrowIndex;
+		}
+
+		private TitleGenre RenderGenreChoice()
+		{
+			string userChoice = "";
+
+			Clear();
+			byte enumLength = (byte)_GENRES.Length;
+
+			byte leftPos = 9;
+			byte topPos = 20;
+
+			TitleGenre finalGenre = 0;
+
+			SetCursorPosition(leftPos + 4, topPos + 1);
+			BackgroundColor = _DEFAULT_TITLE_COLOR;
+			ResetColor();
+
+			Write("\n");
+			for (byte i = 0; i < _GENRES.Length; i++)
+			{
+				Write("|" + i + " - " + _GENRES[i]);
+				if (i % 7 == 0 && i != 0)
+					Write('\n');
+			}
+			RenderMenu(_SEARCH_MENU_SUBTITLE_);
+			RenderSearchBar("Genres (split by spaces using index)");
+
+			foreach(string index in userChoice.Split(' '))
+			{
+				int parsedIndex = 0;
+				bool success = Int32.TryParse(index, out parsedIndex);
+				if (success)
+				{
+					finalGenre |= 
+						(TitleGenre)Enum.Parse(typeof(TitleGenre), 
+						_GENRES[parsedIndex]);
+				}
+			}
+
+			return finalGenre;
+		}
+		private byte GetTypeSize() => 
+			(byte)Enum.GetNames(typeof(TitleType)).Length;
+		
+		private string GetTypeNameByIndex(int index) =>
+			((TitleType)index).ToString();
+
+		private void RenderIMDB()
         {
             byte headerLeftPosition = (byte)
                 (WindowWidth / 2 - _TITLE_[0].Length / 2);
@@ -447,9 +703,10 @@ namespace IMDBDatabase
                 _MAX_RANDOM_DOT_WRITE_TIME));
         }
 
-		public string RenderSearchBar(string searchingBy)
+		public string RenderSearchBar(string searchingBy, bool clear = true)
 		{
-			Clear();
+			if (clear)
+				Clear();
 
 			string userTxt = "";
 			bool exitSearch = false;
@@ -463,7 +720,7 @@ namespace IMDBDatabase
 				new int[2] { 15, 80 });
 
 			SetCursorPosition(35, 14);
-			Write($"{CenterString("Searching for: " + searchingBy, 40),40}");
+			Write($"{CenterString(searchingBy, 40),40}");
 			
 			// Render outer Search bar
 			RenderSolidBackgroundBlock(

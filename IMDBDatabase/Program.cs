@@ -6,36 +6,16 @@ namespace IMDBDatabase
 	{
 		static void Main(string[] args)
 		{
-            //StringTest();
-			ThomasDebug(args);
+			//StringTest();
 		}
 
-        private static void StringTest()
-        {
-            string s = "Sci-Fi";
-            string e = "Film-Noir";
-
-            string f = s.Replace("-", "");
-
-            Title t = new Title(2, new Rating(21, 213)
-                , "no", "movie", $"{s}, {e}", true, "2023", "2324");
-
-
-            Console.WriteLine(t.GetDetailedInfo());
-        }
-
-		private static void ThomasDebug(string[] args)
+		private static void ThomasFullDebug(string[] args)
 		{
 			int userMenuDecision = 0;
 			string userSearch = "";
 
-			IInterface ui = new ConsoleInterface();
-            IReadable info = new Title(202, new Rating(2, 4.2f)
-                , "Fromage",
-                "tvSeries",
-                "Action, Drama, Fantasy",
-                false,
-                "2102", "");
+			//IInterface ui = new ConsoleInterface();
+			ConsoleInterface ui = new ConsoleInterface();
 
 			Database db = new Database();
 
@@ -50,53 +30,19 @@ namespace IMDBDatabase
 				{
 					// Name
 					case 0:
-						userSearch = ui.RenderSearchBar("Name");
+						userSearch = ui.RenderSearchBar("Search by: Name");
 						if (userSearch == null) break;
 						//ui.ShowTitleSearchResult(db.SearchName(userSearch));
 						break;
-					// Type
+					// Person
 					case 1:
-						userSearch = ui.RenderSearchBar("Type");
+						userSearch = ui.RenderSearchBar("Search for: Persons");
 						if (userSearch == null) break;
 						// db.search(userMenuDecision)
 						break;
-					// Type of content
+					// Detailed
 					case 2:
-						bool? adult;
-						adult = ui.RenderContentChoice();
-						if (userSearch == null) break;
-						//ui.ShowTitleSearchResult(db.SearchContent((bool)adult));
-						break;
-					// Score
-					case 3:
-						userSearch = ui.RenderSearchBar("Score");
-						if (userSearch == null) break;
-						// db.search(userMenuDecision)
-						break;
-					// Votes
-					case 4:
-						userSearch = ui.RenderSearchBar("Votes");
-						if (userSearch == null) break;
-						// db.search(userMenuDecision)
-						break;
-					// Year
-					case 5:
-						userSearch = ui.RenderSearchBar("Year");
-						if (userSearch == null) break;
-						// db.search(userMenuDecision)
-						break;
-					// Genres
-					case 6:
-						userSearch = ui.RenderSearchBar(
-							"Genres - Split by spaces");
-						if (userSearch == null) break;
-						//ui.ShowTitleSearchResult(db.SearchGenres(userSearch.Split(' ')));
-						break;
-					// People
-					case 7:
-						userSearch = ui.RenderSearchBar("People");
-						if (userSearch == null) break;
-						// db.search(userMenuDecision)
+						ui.RenderAdvancedSearch();
 						break;
 				}
 			}
