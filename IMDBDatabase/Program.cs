@@ -17,7 +17,7 @@ namespace IMDBDatabase
 
             string f = s.Replace("-", "");
 
-            Title t = new Title(2, new Rating(21, 213)
+            Title t = new Title(new Rating(21, 213)
                 , "no", "movie", $"{s}, {e}", true, "2023", "2324");
 
 
@@ -30,7 +30,7 @@ namespace IMDBDatabase
 			string userSearch = "";
 
 			IInterface ui = new ConsoleInterface();
-            IReadable info = new Title(202, new Rating(2, 4.2f)
+            IReadable info = new Title(new Rating(2, 4.2f)
                 , "Fromage",
                 "tvSeries",
                 "Action, Drama, Fantasy",

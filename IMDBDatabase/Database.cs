@@ -3,7 +3,7 @@
 /// to store the information gathered and the entry point for questioning the
 /// database.
 /// 
-/// @author Rodrigo Pinheiro
+/// @author Rodrigo Pinheiro & Tomás Franco.
 /// @date 2019
 
 using System.Linq;

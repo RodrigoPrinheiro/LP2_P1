@@ -2,7 +2,7 @@
 /// @brief This file contains the enumeration IMDBDatabase.TitleGenre, which
 /// defines the genres of a given title
 ///
-/// @author Rodrigo Pinheiro
+/// @author Rodrigo Pinheiro & Tomás Franco.
 /// @date 2019
 
 using System;

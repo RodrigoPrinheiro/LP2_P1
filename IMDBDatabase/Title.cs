@@ -2,8 +2,8 @@
 /// @brief This file contains class IMDBDatabase.Title, this the basic data set that is used 
 /// for each title in the IMDB database.
 /// 
-///@author Rodrigo Pinheiro
-///@date 2019
+/// @author Rodrigo Pinheiro & Tomás Franco.
+/// @date 2019
 
 using System;
 using System.Collections;
@@ -78,9 +78,15 @@ namespace IMDBDatabase
         /// </summary>
         public Title ParentTitle { get => _parentTitle; }
 
+        /// <summary>
+        /// Season number this title is assign to (if it's an episode).
+        /// </summary>
         public byte? Season { get; set; }
-        public short? EpisodeNumber { get; set; }
 
+        /// <summary>
+        /// Episode number of this title (if it's an episode).
+        /// </summary>
+        public short? EpisodeNumber { get; set; }
 
         /// <summary>
         /// Constructor that creates an instance of Title
@@ -152,11 +158,21 @@ namespace IMDBDatabase
         /// <param name="parent">Parent Title</param>
         public void SetParent(Title parent) => _parentTitle = parent;
 
+        /// <summary>
+        /// Adds a new crew member to the movie's crew
+        /// </summary>
+        /// <param name="person"> Crew member to be added</param>
         public void AddCrewMember(Person person)
         {
             _crew.Add(person);
         }
 
+        /// <summary>
+        /// Compares movies by the overall rating
+        /// </summary>
+        /// <param name="other"> The movie to compare this instance to</param>
+        /// <returns> returns a negative number if it's below in order
+        /// of the movie it's being compared to</returns>
         public int CompareTo(Title other)
         {
             return Comparer<float>.Default.
@@ -174,11 +190,21 @@ namespace IMDBDatabase
             }
         }
 
+        /// <summary>
+        /// Gets the basic information to write a title on the screen
+        /// </summary>
+        /// <returns> String containing the Name and type 
+        /// divided by tabs</returns>
 		public string GetBasicInfo()
 		{
 			return $"{Name}\t{Type}";
 		}
 
+        /// <summary>
+        /// Gets the complete information to write a title on the screen
+        /// </summary>
+        /// <returns> String containing the Name, type, content, 
+        /// rating, years and genres of this title divided by tabs</returns>
 		public string GetDetailedInfo()
 		{
             string adultContent = AdultContent ? "Yes" : "No";
