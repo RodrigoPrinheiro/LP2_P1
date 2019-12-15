@@ -8,187 +8,190 @@ namespace IMDBDatabase
 {
     public class ConsoleInterface : IInterface
     {
-		/// <summary>
-		/// Console window width.
-		/// </summary>
+        /// <summary>
+        /// Console window width.
+        /// </summary>
         private const byte _CONSOLE_WINDOW_WIDTH = 110;
-		/// <summary>
-		/// Console window height.
-		/// </summary>
-		private const byte _CONSOLE_WINDOW_HEIGHT = 40;
+        /// <summary>
+        /// Console window height.
+        /// </summary>
+        private const byte _CONSOLE_WINDOW_HEIGHT = 40;
 
-		/// <summary>
-		/// Minimum slow write letter delay.
-		/// </summary>
+        /// <summary>
+        /// Minimum slow write letter delay.
+        /// </summary>
         private const byte _MIN_RANDOM_SLOW_WRITE_TIME = 4;
-		/// <summary>
-		/// Maximum slow write letter delay.
-		/// </summary>
-		private const byte _MAX_RANDOM_SLOW_WRITE_TIME = 10;
-		/// <summary>
-		/// Minimum dot write delay.
-		/// </summary>
+        /// <summary>
+        /// Maximum slow write letter delay.
+        /// </summary>
+        private const byte _MAX_RANDOM_SLOW_WRITE_TIME = 10;
+        /// <summary>
+        /// Minimum dot write delay.
+        /// </summary>
         private const byte _MIN_RANDOM_DOT_WRITE_TIME = 15;
-		/// <summary>
-		/// Maximum dot write delay.
-		/// </summary>
+        /// <summary>
+        /// Maximum dot write delay.
+        /// </summary>
         private const int _MAX_RANDOM_DOT_WRITE_TIME = 30;
 
-		/// <summary>
-		/// Max number of chars of the title name to display on screen.
-		/// </summary>
+        /// <summary>
+        /// Max number of chars of the title name to display on screen.
+        /// </summary>
         private const byte _MAX_TITLE_NAME_DISPLAY_CHARS = 82;
-		/// <summary>
-		/// Title results to display on screen.
-		/// </summary>
+        /// <summary>
+        /// Title results to display on screen.
+        /// </summary>
         private const byte _MAX_SEARCH_RESULT_DISPLAY_TITLES = 10;
 
-		/// <summary>
-		/// Tile name header.
-		/// </summary>
+        /// <summary>
+        /// Tile name header.
+        /// </summary>
         private const string _NAME_HEADER = "     TITLE NAME     ";
-		/// <summary>
-		/// Type header.
-		/// </summary>
+        /// <summary>
+        /// Type header.
+        /// </summary>
         private const string _TYPE_HEADER = "    TYPE    ";
-		/// <summary>
-		/// Possible start menu choices
-		/// </summary>
+        /// <summary>
+        /// Possible start menu choices
+        /// </summary>
         private static readonly string[] _START_MENU_CHOICES =
             {"Title Name", "People", "Advanced Search"};
-		/// <summary>
-		/// Search menu possible options.
-		/// </summary>
+        /// <summary>
+        /// Search menu possible options.
+        /// </summary>
         private const string _SEARCH_MENU_SUBTITLE_ =
             " \t↑ : Move Selection Up\t\t\tENTER : Select Search\n" +
             " \t↓ : Move Selection Down\t\t\tESC : Exit";
-		/// <summary>
-		/// Search menu title options.
-		/// </summary>
+        /// <summary>
+        /// Search menu title options.
+        /// </summary>
         private const string _SEARCH_RESULT_MENU_TXT =
             " → : Next Page\t\t↑ : Move Selection Up\t\tENTER : Select Title\n" +
             " ← : Previous Page\t↓ : Move Selection Down\t\tESC : Exit Search";
-		/// <summary>
-		/// Search menu detailed possible options.
-		/// </summary>
-		private const string _TITLE_DETAILED_MENU_TXT =
+        /// <summary>
+        /// Search menu detailed possible options.
+        /// </summary>
+        private const string _TITLE_DETAILED_MENU_TXT =
             " C : Show Title Crew\t\t\t\tE: Show Coupled Title\n" +
             " P : Go to Parent Title\t\t\t\tESC : Exit Search";
-		/// <summary>
-		/// Title info sub-info.
-		/// </summary>
+        /// <summary>
+        /// Title info sub-info.
+        /// </summary>
         private static readonly string[] _TITLE_INFO_HEADERS =
             {"Type", "Adult Content", "Score", "Votes",
             "Start Year", "End Year", "Genres"};
-		/// <summary>
-		/// Search bar possible menu options.
-		/// </summary>
-		private static readonly string _SEARCH_BAR_MENU_TXT =
-			"\t\t\t\t\tEnter: Search\n" +
-			"\t\t\t\t\t  Esc: Exit";
 
-		private static readonly string[] _ADVANCED_SEARCH_OPTIONS =
-			{"Name", "Type", "Genre", "Adult Content",
-			"Start Year", "End Year", "##### SEARCH FOR TITLES! ####"};
+        private static readonly string[] _PERSON_DETAILED_INFO =
+            {"Birth Year", "Death Year", "Professions"};
+        /// <summary>
+        /// Search bar possible menu options.
+        /// </summary>
+        private static readonly string _SEARCH_BAR_MENU_TXT =
+            "\t\t\t\t\tEnter: Search\n" +
+            "\t\t\t\t\t  Esc: Exit";
 
-		private static readonly string[] _GENRES =
-		{
-			"Action", "Adventure", "Animation", "Biography", "Comedy", "Crime",
-			"Documentary", "Drama", "Family", "Fantasy", "FilmNoir", "GameShow",
-			"History", "Horror", "Music", "Musical", "Mystery", "News",
-			"RealityTv", "Romance", "SciFi", "Sport", "TalkShow", "Thriller",
-			"War", "Western", "Short", "Adult"
-		};
+        private static readonly string[] _ADVANCED_SEARCH_OPTIONS =
+            {"Name", "Type", "Genre", "Adult Content",
+            "Start Year", "End Year", "##### SEARCH FOR TITLES! ####"};
 
-		/// <summary>
-		/// IMDB logo.
-		/// </summary>
-		private static readonly string[] _TITLE_ =
+        private static readonly string[] _GENRES =
+        {
+            "Action", "Adventure", "Animation", "Biography", "Comedy", "Crime",
+            "Documentary", "Drama", "Family", "Fantasy", "FilmNoir", "GameShow",
+            "History", "Horror", "Music", "Musical", "Mystery", "News",
+            "RealityTv", "Romance", "SciFi", "Sport", "TalkShow", "Thriller",
+            "War", "Western", "Short", "Adult"
+        };
+
+        /// <summary>
+        /// IMDB logo.
+        /// </summary>
+        private static readonly string[] _TITLE_ =
             { "██╗███╗   ███╗██████╗ ██████╗", "██║████╗ ████║██╔══██╗██╔══██╗",
             "██║██╔████╔██║██║  ██║██████╔╝", "██║██║╚██╔╝██║██║  ██║██╔══██╗",
             "██║██║ ╚═╝ ██║██████╔╝██████╔╝", "╚═╝╚═╝     ╚═╝╚═════╝ ╚═════╝",
-			"\t\t  The Database"};
+            "\t\t  The Database"};
 
-		/// <summary>
-		/// Default foreground color.
-		/// </summary>
+        /// <summary>
+        /// Default foreground color.
+        /// </summary>
         private const ConsoleColor _DEFAULT_FG_COLOR = ConsoleColor.White;
-		/// <summary>
-		/// Default background color.
-		/// </summary>
-		private const ConsoleColor _DEFAULT_BG_COLOR = ConsoleColor.Black;
-		/// <summary>
-		/// Default logo color.
-		/// </summary>
-		private const ConsoleColor _DEFAULT_TITLE_COLOR = ConsoleColor.Magenta;
+        /// <summary>
+        /// Default background color.
+        /// </summary>
+        private const ConsoleColor _DEFAULT_BG_COLOR = ConsoleColor.Black;
+        /// <summary>
+        /// Default logo color.
+        /// </summary>
+        private const ConsoleColor _DEFAULT_TITLE_COLOR = ConsoleColor.Magenta;
 
-		/// <summary>
-		/// Selection arrow char
-		/// </summary>
+        /// <summary>
+        /// Selection arrow char
+        /// </summary>
         private const char _ARROW_CHAR = '►';
 
-		/// <summary>
-		/// Current arrow selection index.
-		/// </summary>
+        /// <summary>
+        /// Current arrow selection index.
+        /// </summary>
         private int _selectionArrowIndex;
-		/// <summary>
-		/// Left and Top position of the arrow
-		/// </summary>
+        /// <summary>
+        /// Left and Top position of the arrow
+        /// </summary>
         private int[] _selectionArrowPos;
-		/// <summary>
-		/// Random
-		/// </summary>
+        /// <summary>
+        /// Random
+        /// </summary>
         private Random _rand;
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public ConsoleInterface()
         {
-			// Get the console ready
+            // Get the console ready
             OutputEncoding = Encoding.UTF8;
 
-			// Initialize variables
+            // Initialize variables
             _rand = new Random();
             _selectionArrowIndex = 0;
             _selectionArrowPos = new int[2];
 
             ForegroundColor = _DEFAULT_FG_COLOR;
 
-			// Set the console size
+            // Set the console size
             SetWindowSize(_CONSOLE_WINDOW_WIDTH, _CONSOLE_WINDOW_HEIGHT);
 
-			// Hide cursor
+            // Hide cursor
             CursorVisible = false;
         }
 
-		/// <summary>
-		/// Render msg with red background.
-		/// </summary>
-		/// <param name="error"></param>
+        /// <summary>
+        /// Render msg with red background.
+        /// </summary>
+        /// <param name="error"></param>
         public void RenderError(string error)
         {
-			BackgroundColor = ConsoleColor.Red;
+            BackgroundColor = ConsoleColor.Red;
             ForegroundColor = ConsoleColor.Black;
             ShowMsg(error);
             ForegroundColor = _DEFAULT_FG_COLOR;
-			BackgroundColor = _DEFAULT_BG_COLOR;
+            BackgroundColor = _DEFAULT_BG_COLOR;
         }
 
         public void RenderStartMenu(out int playerDecision)
         {
-			Clear();
+            Clear();
 
             byte leftPos = 39;
             byte topPos = 21;
             byte yIndex = 1;
 
-			bool leaveSwitch = false;
-			int finalDecision = 0;
+            bool leaveSwitch = false;
+            int finalDecision = 0;
 
-			_selectionArrowIndex = 0;
+            _selectionArrowIndex = 0;
 
-			RenderIMDB();
+            RenderIMDB();
             RenderMenu(_SEARCH_MENU_SUBTITLE_);
             RenderSolidBackgroundBlock(
                 ConsoleColor.Yellow,
@@ -197,7 +200,7 @@ namespace IMDBDatabase
 
             SetCursorPosition(leftPos + 4, topPos + 1);
             BackgroundColor = _DEFAULT_TITLE_COLOR;
-            Write($"{CenterString("Search for", 25), 25}");
+            Write($"{CenterString("Search for", 25),25}");
             ResetColor();
 
             for (int i = 0; i < _START_MENU_CHOICES.Length * 2; i++)
@@ -207,7 +210,7 @@ namespace IMDBDatabase
                     string paddedHeader = null;
                     SetCursorPosition(leftPos + 1, topPos + 2 + yIndex++ + i);
                     paddedHeader = CenterString(_START_MENU_CHOICES[i], 31);
-                    Write($"{paddedHeader, 31}");
+                    Write($"{paddedHeader,31}");
                 }
             }
 
@@ -215,269 +218,269 @@ namespace IMDBDatabase
             _selectionArrowPos[1] = topPos + 3;
             RenderVerticalSelectionArrow(false);
 
-			while (!leaveSwitch)
-				switch (WaitForAnyUserKeyPress().Key)
-				{
-					// Selection Up
-					case ConsoleKey.UpArrow:
-						RenderVerticalSelectionArrow(false, 3);
-						break;
-					// Selection Down
-					case ConsoleKey.DownArrow:
-						RenderVerticalSelectionArrow(true, 3);
-						break;
-					// User choice
-					case ConsoleKey.Enter:
-						finalDecision = _selectionArrowIndex;
-						leaveSwitch = true;
-						break;
-					// Exit search
-					case ConsoleKey.Escape:
-						finalDecision = -1;
-						leaveSwitch = true;
-						break;
-				};
+            while (!leaveSwitch)
+                switch (WaitForAnyUserKeyPress().Key)
+                {
+                    // Selection Up
+                    case ConsoleKey.UpArrow:
+                        RenderVerticalSelectionArrow(false, 3);
+                        break;
+                    // Selection Down
+                    case ConsoleKey.DownArrow:
+                        RenderVerticalSelectionArrow(true, 3);
+                        break;
+                    // User choice
+                    case ConsoleKey.Enter:
+                        finalDecision = _selectionArrowIndex;
+                        leaveSwitch = true;
+                        break;
+                    // Exit search
+                    case ConsoleKey.Escape:
+                        finalDecision = -1;
+                        leaveSwitch = true;
+                        break;
+                };
 
-			playerDecision = finalDecision;
-		}
+            playerDecision = finalDecision;
+        }
 
-		public void RenderAdvancedSearch(Database db)
-		{
-			string name = null;
-			TitleType type = 0;
-			TitleGenre genre = 0;
-			bool? content = null;
-			ushort? startYear = null;
-			ushort? endYear = null;
+        public void RenderAdvancedSearch(Database db)
+        {
+            string name = null;
+            TitleType type = 0;
+            TitleGenre genre = 0;
+            bool? content = null;
+            ushort? startYear = null;
+            ushort? endYear = null;
 
-			bool leaveDetailedSearch = false;
+            bool leaveDetailedSearch = false;
 
-			while (!leaveDetailedSearch)
-			{
-				Clear();
+            while (!leaveDetailedSearch)
+            {
+                Clear();
 
-				byte leftPos = 39;
-				byte topPos = 17;
-				byte yIndex = 1;
+                byte leftPos = 39;
+                byte topPos = 17;
+                byte yIndex = 1;
 
-				bool leaveSwitch = false;
+                bool leaveSwitch = false;
 
-				RenderMenu(_SEARCH_MENU_SUBTITLE_);
-				RenderSolidBackgroundBlock(
-					ConsoleColor.Yellow,
-					new int[] { topPos, leftPos },
-					new int[] { topPos + 17, 72 });
+                RenderMenu(_SEARCH_MENU_SUBTITLE_);
+                RenderSolidBackgroundBlock(
+                    ConsoleColor.Yellow,
+                    new int[] { topPos, leftPos },
+                    new int[] { topPos + 17, 72 });
 
-				SetCursorPosition(leftPos + 4, topPos + 1);
-				BackgroundColor = _DEFAULT_TITLE_COLOR;
-				Write($"{CenterString("Set parameters:", 25),25}");
-				ResetColor();
+                SetCursorPosition(leftPos + 4, topPos + 1);
+                BackgroundColor = _DEFAULT_TITLE_COLOR;
+                Write($"{CenterString("Set parameters:", 25),25}");
+                ResetColor();
 
-				for (int i = 0; i < _ADVANCED_SEARCH_OPTIONS.Length * 2; i++)
-				{
-					if (_ADVANCED_SEARCH_OPTIONS.Length > i)
-					{
-						string paddedHeader = null;
-						SetCursorPosition(leftPos + 1, topPos + 2 + yIndex++ + i);
-						paddedHeader = CenterString(_ADVANCED_SEARCH_OPTIONS[i], 31);
-						Write($"{paddedHeader,31}");
-					}
-				}
+                for (int i = 0; i < _ADVANCED_SEARCH_OPTIONS.Length * 2; i++)
+                {
+                    if (_ADVANCED_SEARCH_OPTIONS.Length > i)
+                    {
+                        string paddedHeader = null;
+                        SetCursorPosition(leftPos + 1, topPos + 2 + yIndex++ + i);
+                        paddedHeader = CenterString(_ADVANCED_SEARCH_OPTIONS[i], 31);
+                        Write($"{paddedHeader,31}");
+                    }
+                }
 
-				_selectionArrowIndex = 0;
-				_selectionArrowPos[0] = leftPos - 2;
-				_selectionArrowPos[1] = topPos + 3;
-				RenderVerticalSelectionArrow(false);
+                _selectionArrowIndex = 0;
+                _selectionArrowPos[0] = leftPos - 2;
+                _selectionArrowPos[1] = topPos + 3;
+                RenderVerticalSelectionArrow(false);
 
-				while (!leaveSwitch)
-				{
-					switch (WaitForAnyUserKeyPress().Key)
-					{
-						// Selection Up
-						case ConsoleKey.UpArrow:
-							RenderVerticalSelectionArrow(false,
-								(byte)_ADVANCED_SEARCH_OPTIONS.Length);
-							break;
-						// Selection Down
-						case ConsoleKey.DownArrow:
-							RenderVerticalSelectionArrow(true,
-								(byte)_ADVANCED_SEARCH_OPTIONS.Length);
-							break;
-						// User choice
-						case ConsoleKey.Enter:
-							switch (_selectionArrowIndex)
-							{
-								// Name
-								case 0:
-									name = RenderSearchBar("Insert Name:");
-									Console.WriteLine(name);
-									break;
-								// Type
-								case 1:
-									type = (TitleType)RenderTypeChoice();
-									Console.WriteLine(type.ToString());
-									break;
-								// Genre
-								case 2:
-									genre = (TitleGenre)RenderGenreChoice();
-									Console.WriteLine(genre.ToString());
-									break;
-								// Content
-								case 3:
-									content = RenderContentChoice();
-									Console.WriteLine(content);
-									break;
-								// Start year
-								case 4:
-									ushort start = 0;
-									UInt16.TryParse(
-										RenderSearchBar("Insert Start year"),
-										out start);
-									if (start != 0)
-										startYear = start;
-									Console.WriteLine(start);
-									break;
-								// End year
-								case 5:
-									ushort end = 0;
-									UInt16.TryParse(
-										RenderSearchBar("Insert End year"),
-										out end);
-									if (end != 0)
-										endYear = end;
-									Console.WriteLine(end);
-									break;
-								// Search
-								case 6:
-									leaveDetailedSearch = true;
-									break;
-							}
-							leaveSwitch = true;
-							break;
-						// Exit search
-						case ConsoleKey.Escape:
-							leaveSwitch = true;
-							leaveDetailedSearch = true;
-							break;
-					};
-				}
-			}
+                while (!leaveSwitch)
+                {
+                    switch (WaitForAnyUserKeyPress().Key)
+                    {
+                        // Selection Up
+                        case ConsoleKey.UpArrow:
+                            RenderVerticalSelectionArrow(false,
+                                (byte)_ADVANCED_SEARCH_OPTIONS.Length);
+                            break;
+                        // Selection Down
+                        case ConsoleKey.DownArrow:
+                            RenderVerticalSelectionArrow(true,
+                                (byte)_ADVANCED_SEARCH_OPTIONS.Length);
+                            break;
+                        // User choice
+                        case ConsoleKey.Enter:
+                            switch (_selectionArrowIndex)
+                            {
+                                // Name
+                                case 0:
+                                    name = RenderSearchBar("Insert Name:");
+                                    Console.WriteLine(name);
+                                    break;
+                                // Type
+                                case 1:
+                                    type = (TitleType)RenderTypeChoice();
+                                    Console.WriteLine(type.ToString());
+                                    break;
+                                // Genre
+                                case 2:
+                                    genre = (TitleGenre)RenderGenreChoice();
+                                    Console.WriteLine(genre.ToString());
+                                    break;
+                                // Content
+                                case 3:
+                                    content = RenderContentChoice();
+                                    Console.WriteLine(content);
+                                    break;
+                                // Start year
+                                case 4:
+                                    ushort start = 0;
+                                    UInt16.TryParse(
+                                        RenderSearchBar("Insert Start year"),
+                                        out start);
+                                    if (start != 0)
+                                        startYear = start;
+                                    Console.WriteLine(start);
+                                    break;
+                                // End year
+                                case 5:
+                                    ushort end = 0;
+                                    UInt16.TryParse(
+                                        RenderSearchBar("Insert End year"),
+                                        out end);
+                                    if (end != 0)
+                                        endYear = end;
+                                    Console.WriteLine(end);
+                                    break;
+                                // Search
+                                case 6:
+                                    leaveDetailedSearch = true;
+                                    break;
+                            }
+                            leaveSwitch = true;
+                            break;
+                        // Exit search
+                        case ConsoleKey.Escape:
+                            leaveSwitch = true;
+                            leaveDetailedSearch = true;
+                            break;
+                    };
+                }
+            }
 
-			ShowTitleSearchResult(
-				db.AdvancedSearch(name, type, genre, content, startYear, endYear));
-		}
+            ShowTitleSearchResult(
+                db.AdvancedSearch(name, type, genre, content, startYear, endYear));
+        }
 
-		private int RenderTypeChoice()
-		{
-			bool leaveSwitch = false;
+        private int RenderTypeChoice()
+        {
+            bool leaveSwitch = false;
 
-			Clear();
-			byte enumLength = GetTypeSize();
+            Clear();
+            byte enumLength = GetTypeSize();
 
-			byte leftPos = 39;
-			byte topPos = (byte)(21 - enumLength);
-			byte yIndex = 1;
+            byte leftPos = 39;
+            byte topPos = (byte)(21 - enumLength);
+            byte yIndex = 1;
 
-			RenderMenu(_SEARCH_MENU_SUBTITLE_);
-			RenderSolidBackgroundBlock(
-				ConsoleColor.DarkYellow,
-				new int[] { topPos, leftPos },
-				new int[] { topPos + enumLength * 2 + 1, 72 });
+            RenderMenu(_SEARCH_MENU_SUBTITLE_);
+            RenderSolidBackgroundBlock(
+                ConsoleColor.DarkYellow,
+                new int[] { topPos, leftPos },
+                new int[] { topPos + enumLength * 2 + 1, 72 });
 
-			SetCursorPosition(leftPos + 4, topPos + 1);
-			BackgroundColor = _DEFAULT_TITLE_COLOR;
-			Write($"{CenterString("Choose Type", 25),25}");
-			ResetColor();
+            SetCursorPosition(leftPos + 4, topPos + 1);
+            BackgroundColor = _DEFAULT_TITLE_COLOR;
+            Write($"{CenterString("Choose Type", 25),25}");
+            ResetColor();
 
-			for (int i = 0; i < enumLength * 2; i++)
-			{
-				if (enumLength > i && i > 0)
-				{
-					string paddedHeader = GetTypeNameByIndex(i);
-					SetCursorPosition(leftPos + 1, topPos + 1 + yIndex++ + i);
-					if (paddedHeader != null)
-						paddedHeader = CenterString(paddedHeader, 31);
-					Write($"{paddedHeader,31}");
-				}
-			}
+            for (int i = 0; i < enumLength * 2; i++)
+            {
+                if (enumLength > i && i > 0)
+                {
+                    string paddedHeader = GetTypeNameByIndex(i);
+                    SetCursorPosition(leftPos + 1, topPos + 1 + yIndex++ + i);
+                    if (paddedHeader != null)
+                        paddedHeader = CenterString(paddedHeader, 31);
+                    Write($"{paddedHeader,31}");
+                }
+            }
 
-			_selectionArrowIndex = 0;
-			_selectionArrowPos[0] = leftPos - 2;
-			_selectionArrowPos[1] = topPos + 3;
-			RenderVerticalSelectionArrow(false);
+            _selectionArrowIndex = 0;
+            _selectionArrowPos[0] = leftPos - 2;
+            _selectionArrowPos[1] = topPos + 3;
+            RenderVerticalSelectionArrow(false);
 
-			while (!leaveSwitch)
-				switch (WaitForAnyUserKeyPress().Key)
-				{
-					// Selection Up
-					case ConsoleKey.UpArrow:
-						RenderVerticalSelectionArrow(false, 
-							(byte)(enumLength - 1));
-						break;
-					// Selection Down
-					case ConsoleKey.DownArrow:
-						RenderVerticalSelectionArrow(true, 
-							(byte)(enumLength - 1));
-						break;
-					// User choice
-					case ConsoleKey.Enter:
-						leaveSwitch = true;
-						break;
-					// Exit search
-					case ConsoleKey.Escape:
-						leaveSwitch = true;
-						break;
-				};
+            while (!leaveSwitch)
+                switch (WaitForAnyUserKeyPress().Key)
+                {
+                    // Selection Up
+                    case ConsoleKey.UpArrow:
+                        RenderVerticalSelectionArrow(false,
+                            (byte)(enumLength - 1));
+                        break;
+                    // Selection Down
+                    case ConsoleKey.DownArrow:
+                        RenderVerticalSelectionArrow(true,
+                            (byte)(enumLength - 1));
+                        break;
+                    // User choice
+                    case ConsoleKey.Enter:
+                        leaveSwitch = true;
+                        break;
+                    // Exit search
+                    case ConsoleKey.Escape:
+                        leaveSwitch = true;
+                        break;
+                };
 
-			return _selectionArrowIndex + 1;
-		}
+            return _selectionArrowIndex + 1;
+        }
 
-		private TitleGenre RenderGenreChoice()
-		{
-			string userChoice = "";
+        private TitleGenre RenderGenreChoice()
+        {
+            string userChoice = "";
 
-			Clear();
-			byte enumLength = (byte)_GENRES.Length;
-			byte leftPos = 9;
-			byte topPos = 20;
+            Clear();
+            byte enumLength = (byte)_GENRES.Length;
+            byte leftPos = 9;
+            byte topPos = 20;
 
-			TitleGenre finalGenre = TitleGenre.Ignore;
+            TitleGenre finalGenre = TitleGenre.Ignore;
 
-			SetCursorPosition(leftPos + 4, topPos + 1);
-			BackgroundColor = _DEFAULT_TITLE_COLOR;
-			ResetColor();
+            SetCursorPosition(leftPos + 4, topPos + 1);
+            BackgroundColor = _DEFAULT_TITLE_COLOR;
+            ResetColor();
 
-			Write("\n");
-			for (byte i = 0; i < _GENRES.Length; i++)
-			{
-				Write("|" + i + " - " + _GENRES[i]);
-				if (i % 7 == 0 && i != 0)
-					Write('\n');
-			}
-			RenderMenu(_SEARCH_MENU_SUBTITLE_);
-			userChoice = RenderSearchBar
+            Write("\n");
+            for (byte i = 0; i < _GENRES.Length; i++)
+            {
+                Write("|" + i + " - " + _GENRES[i]);
+                if (i % 7 == 0 && i != 0)
+                    Write('\n');
+            }
+            RenderMenu(_SEARCH_MENU_SUBTITLE_);
+            userChoice = RenderSearchBar
                 ("Genres (split by spaces using index)", false);
 
-			foreach(string index in userChoice.Split(" "))
-			{
-				int parsedIndex = 0;
+            foreach (string index in userChoice.Split(" "))
+            {
+                int parsedIndex = 0;
                 WriteLine(index);
-				if (Int32.TryParse(index, out parsedIndex))
-				{
-					finalGenre |= (TitleGenre)Enum.Parse
+                if (Int32.TryParse(index, out parsedIndex))
+                {
+                    finalGenre |= (TitleGenre)Enum.Parse
                         (typeof(TitleGenre), _GENRES[parsedIndex], true);
-				}
-			}
+                }
+            }
 
-			return finalGenre;
-		}
-		private byte GetTypeSize() => 
-			(byte)Enum.GetNames(typeof(TitleType)).Length;
-		
-		private string GetTypeNameByIndex(int index) =>
-			((TitleType)index).ToString();
+            return finalGenre;
+        }
+        private byte GetTypeSize() =>
+            (byte)Enum.GetNames(typeof(TitleType)).Length;
 
-		private void RenderIMDB()
+        private string GetTypeNameByIndex(int index) =>
+            ((TitleType)index).ToString();
+
+        private void RenderIMDB()
         {
             byte headerLeftPosition = (byte)
                 (WindowWidth / 2 - _TITLE_[0].Length / 2);
@@ -526,7 +529,7 @@ namespace IMDBDatabase
             _selectionArrowIndex = 0;
             bool exitSearchResult = false;
 
-			byte headerTopPosition = 11;
+            byte headerTopPosition = 11;
             byte headerLeftPosition = 6;
             byte typeXPos = (byte)(headerLeftPosition + 85);
 
@@ -598,7 +601,6 @@ namespace IMDBDatabase
                             case ConsoleKey.RightArrow:
                                 resultAmmount = 0;
                                 yIndex = 1;
-
                                 if (i + _MAX_SEARCH_RESULT_DISPLAY_TITLES >
                                     results.Length + 10)
                                     i -= _MAX_SEARCH_RESULT_DISPLAY_TITLES;
@@ -641,6 +643,8 @@ namespace IMDBDatabase
 
         public void ShowDetailedTitleInfo(IReadable titleInfo = null)
         {
+            if (titleInfo == null) return;
+
             string[] titleDetailedInfo = null;
             string titleHeader = null;
 
@@ -668,7 +672,10 @@ namespace IMDBDatabase
                 SetCursorPosition(
                     headerLeftPosition + 4,
                     headerTopPosition + yIndex++ + i);
-                Write($"{_TITLE_INFO_HEADERS[i - 1],15}");
+                if (titleDetailedInfo.Length <= 4)
+                    Write($"{_PERSON_DETAILED_INFO[i - 1],15}");
+                else
+                    Write($"{_TITLE_INFO_HEADERS[i - 1],15}");
 
                 SetCursorPosition(
                     headerLeftPosition + 21,
@@ -686,6 +693,9 @@ namespace IMDBDatabase
                         break;
                     case ConsoleKey.P:
                         ShowDetailedTitleInfo(titleInfo.GetParentInfo());
+                        break;
+                    case ConsoleKey.C:
+                        ShowTitleSearchResult(titleInfo.GetCrew());
                         break;
                     case ConsoleKey.Escape:
                         leaveSwitch = true;
@@ -712,133 +722,133 @@ namespace IMDBDatabase
                 _MAX_RANDOM_DOT_WRITE_TIME));
         }
 
-		public string RenderSearchBar(string searchingBy, bool clear = true)
-		{
-			if (clear)
-				Clear();
+        public string RenderSearchBar(string searchingBy, bool clear = true)
+        {
+            if (clear)
+                Clear();
 
-			string userTxt = "";
-			bool exitSearch = false;
+            string userTxt = "";
+            bool exitSearch = false;
 
-			RenderMenu(_SEARCH_BAR_MENU_TXT);
+            RenderMenu(_SEARCH_BAR_MENU_TXT);
 
-			// Render header
-			RenderSolidBackgroundBlock(
-				ConsoleColor.DarkYellow,
-				new int[2] { 13, 30 },
-				new int[2] { 15, 80 });
+            // Render header
+            RenderSolidBackgroundBlock(
+                ConsoleColor.DarkYellow,
+                new int[2] { 13, 30 },
+                new int[2] { 15, 80 });
 
-			SetCursorPosition(35, 14);
-			Write($"{CenterString(searchingBy, 40),40}");
-			
-			// Render outer Search bar
-			RenderSolidBackgroundBlock(
-				ConsoleColor.DarkYellow,
-				new int[2] { 15, 10 },
-				new int[2] { 18, 100 });
+            SetCursorPosition(35, 14);
+            Write($"{CenterString(searchingBy, 40),40}");
 
-			// Render inner Search bar
-			RenderSolidBackgroundBlock(
-				ConsoleColor.Black,
-				new int[2] { 16, 11 },
-				new int[2] { 17, 99 });
-			SetCursorPosition(11, 16);
+            // Render outer Search bar
+            RenderSolidBackgroundBlock(
+                ConsoleColor.DarkYellow,
+                new int[2] { 15, 10 },
+                new int[2] { 18, 100 });
 
-			CursorVisible = true;
+            // Render inner Search bar
+            RenderSolidBackgroundBlock(
+                ConsoleColor.Black,
+                new int[2] { 16, 11 },
+                new int[2] { 17, 99 });
+            SetCursorPosition(11, 16);
 
-			while (!exitSearch)
-			{
-				ConsoleKeyInfo userKey = WaitForAnyUserKeyPress();
+            CursorVisible = true;
 
-				switch (userKey.Key)
-				{
-					case ConsoleKey.Escape:
-						userTxt = null;
-						exitSearch = true;
-						break;
-					case ConsoleKey.Enter:
-						exitSearch = true;
-						break;
-					case ConsoleKey.Backspace:
-						if (userTxt.Length - 1 >= 0)
-						{
-							SetCursorPosition(CursorLeft - 1);
-							Write(" ");
-							SetCursorPosition(CursorLeft - 1);
+            while (!exitSearch)
+            {
+                ConsoleKeyInfo userKey = WaitForAnyUserKeyPress();
 
-							userTxt = userTxt.Remove(userTxt.Length - 1);
-						}
-						break;
-					default:
-						Write(userKey.KeyChar);
-						userTxt += userKey.KeyChar;
-						break;
-				}
-			}
+                switch (userKey.Key)
+                {
+                    case ConsoleKey.Escape:
+                        userTxt = null;
+                        exitSearch = true;
+                        break;
+                    case ConsoleKey.Enter:
+                        exitSearch = true;
+                        break;
+                    case ConsoleKey.Backspace:
+                        if (userTxt.Length - 1 >= 0)
+                        {
+                            SetCursorPosition(CursorLeft - 1);
+                            Write(" ");
+                            SetCursorPosition(CursorLeft - 1);
 
-			CursorVisible = false;
-			return userTxt;
-		}
+                            userTxt = userTxt.Remove(userTxt.Length - 1);
+                        }
+                        break;
+                    default:
+                        Write(userKey.KeyChar);
+                        userTxt += userKey.KeyChar;
+                        break;
+                }
+            }
 
-		public bool? RenderContentChoice()
-		{
-			Clear();
+            CursorVisible = false;
+            return userTxt;
+        }
 
-			bool? searchForAdult = null;
+        public bool? RenderContentChoice()
+        {
+            Clear();
 
-			RenderMenu(_SEARCH_MENU_SUBTITLE_);
+            bool? searchForAdult = null;
 
-			// Header txt
-			SetCursorPosition(35, 20);
-			Write($"{CenterString("Adult content?", 40),40}");
+            RenderMenu(_SEARCH_MENU_SUBTITLE_);
 
-			// Render outer bar
-			RenderSolidBackgroundBlock(
-				ConsoleColor.DarkYellow,
-				new int[2] { 22, 47 },
-				new int[2] { 29, 63 });
+            // Header txt
+            SetCursorPosition(35, 20);
+            Write($"{CenterString("Adult content?", 40),40}");
 
-			// Render inner bar
-			RenderSolidBackgroundBlock(
-				ConsoleColor.Black,
-				new int[2] { 22, 48 },
-				new int[2] { 29, 62 });
+            // Render outer bar
+            RenderSolidBackgroundBlock(
+                ConsoleColor.DarkYellow,
+                new int[2] { 22, 47 },
+                new int[2] { 29, 63 });
 
-			SetCursorPosition(54, 24);
-			Write("Yes");
-			SetCursorPosition(54, 26);
-			Write("No");
+            // Render inner bar
+            RenderSolidBackgroundBlock(
+                ConsoleColor.Black,
+                new int[2] { 22, 48 },
+                new int[2] { 29, 62 });
 
-			_selectionArrowPos[0] = 51;
-			RenderVerticalSelectionArrow(false, 2);
+            SetCursorPosition(54, 24);
+            Write("Yes");
+            SetCursorPosition(54, 26);
+            Write("No");
 
-			bool leaveSwitch = false;
-			while (!leaveSwitch)
-				switch (WaitForAnyUserKeyPress().Key)
-				{
-					case ConsoleKey.UpArrow:
-						RenderVerticalSelectionArrow(false, 2);
-						break;
-					// Selection down
-					case ConsoleKey.DownArrow:
-						RenderVerticalSelectionArrow(true, 2);
-						break;
-					// Show detailed info of selected title
-					case ConsoleKey.Enter:
-						searchForAdult = _selectionArrowIndex == 0;
-						leaveSwitch = true;
-						break;
-					// Exit search
-					case ConsoleKey.Escape:
-						leaveSwitch = true;
-						break;
-				}
+            _selectionArrowPos[0] = 51;
+            RenderVerticalSelectionArrow(false, 2);
+
+            bool leaveSwitch = false;
+            while (!leaveSwitch)
+                switch (WaitForAnyUserKeyPress().Key)
+                {
+                    case ConsoleKey.UpArrow:
+                        RenderVerticalSelectionArrow(false, 2);
+                        break;
+                    // Selection down
+                    case ConsoleKey.DownArrow:
+                        RenderVerticalSelectionArrow(true, 2);
+                        break;
+                    // Show detailed info of selected title
+                    case ConsoleKey.Enter:
+                        searchForAdult = _selectionArrowIndex == 0;
+                        leaveSwitch = true;
+                        break;
+                    // Exit search
+                    case ConsoleKey.Escape:
+                        leaveSwitch = true;
+                        break;
+                }
 
 
-			return searchForAdult;
-		}
+            return searchForAdult;
+        }
 
-		private ConsoleKeyInfo WaitForAnyUserKeyPress() => ReadKey(true);
+        private ConsoleKeyInfo WaitForAnyUserKeyPress() => ReadKey(true);
 
         public string WaitForUserTextInput() => ReadLine();
 
@@ -976,8 +986,8 @@ namespace IMDBDatabase
 
         }
 
-        private void RenderVerticalSelectionArrow(bool incrementIndex, 
-			byte maxIndex = _MAX_SEARCH_RESULT_DISPLAY_TITLES)
+        private void RenderVerticalSelectionArrow(bool incrementIndex,
+            byte maxIndex = _MAX_SEARCH_RESULT_DISPLAY_TITLES)
         {
             // Clear Arrow
             SetCursorPosition(_selectionArrowPos[0], _selectionArrowPos[1]);
@@ -1000,6 +1010,6 @@ namespace IMDBDatabase
             // New Arrow
             SetCursorPosition(_selectionArrowPos[0], _selectionArrowPos[1]);
             Write(_ARROW_CHAR);
-		}
-	}
+        }
+    }
 }

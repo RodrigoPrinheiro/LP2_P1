@@ -34,7 +34,8 @@ namespace IMDBDatabase
 					case 1:
 						userSearch = ui.RenderSearchBar("Search for: Persons");
 						if (userSearch == null) break;
-						// db.search(userMenuDecision)
+                        ui.ShowTitleSearchResult(
+                            db.SearchPersonName(userSearch));
 						break;
 					// Detailed
 					case 2:

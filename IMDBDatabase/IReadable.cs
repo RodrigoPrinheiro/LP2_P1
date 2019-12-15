@@ -6,5 +6,6 @@
 		string GetDetailedInfo();
         IReadable GetParentInfo();
         IReadable[] GetCoupled();
+        IReadable[] GetCrew();
 	}
 }

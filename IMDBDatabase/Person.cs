@@ -67,7 +67,7 @@ namespace IMDBDatabase
         /// <returns> String containing the Name of the person</returns>
         public string GetBasicInfo()
         {
-            return $"{Name}";
+            return $"{Name}\t{Professions.Split(',', ' ')[0]}";
         }
 
         /// <summary>
@@ -87,9 +87,7 @@ namespace IMDBDatabase
             return $"{Name}\t{birthYear}\t{deathYear}\t{Professions}";
         }
 
-        public IReadable GetParentInfo()
-        {
-            return null;
-        }
+        public IReadable GetParentInfo() => null;
+        public IReadable[] GetCrew() => null;
     }
 }

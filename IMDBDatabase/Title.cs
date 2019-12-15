@@ -234,5 +234,10 @@ namespace IMDBDatabase
         {
             return _parentTitle as IReadable;
         }
+
+        public IReadable[] GetCrew()
+        {
+            return _crew.ToArray<IReadable>();
+        }
     }
 }
