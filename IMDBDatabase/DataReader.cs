@@ -10,7 +10,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Collections.Generic;
 using System.Text;
-using System.Linq;
 using System.Threading;
 
 namespace IMDBDatabase
@@ -26,30 +25,19 @@ namespace IMDBDatabase
 		/// </summary>
 		private const string _NAME_BASICS_FILENAME =	"name.basics.tsv.gz";
 		/// <summary>
-		/// Name of the title_akas file
-		/// </summary>
-		private const string _TITLE_AKAS_FILENAME =		"title.akas.tsv.gz";
-		/// <summary>
 		/// Name of the title_basics file
 		/// </summary>
 		private const string _TITLE_BASICS_FILENAME =	"title.basics.tsv.gz";
-		/// <summary>
-		/// Name of the title_crew file
-		/// </summary>
-		private const string _TITLE_CREW_FILENAME =		"title.crew.tsv.gz";
 		/// <summary>
 		/// Name of the title_episode file
 		/// </summary>
 		private const string _TITLE_EPISODE_FILENAME =	"title.episode.tsv.gz";
 		/// <summary>
-		/// Name of the title_principals file
-		/// </summary>
-		private const string _TITLE_PRINCIPALS_FILENAME ="title.principals.tsv.gz";
-		/// <summary>
 		/// Name of the title_ratings file
 		/// </summary>
 		private const string _TITLE_RATINGS_FILENAME =	"title.ratings.tsv.gz";
 
+		// Instance variables
 		/// <summary>
 		/// Path to local appdata
 		/// </summary>
@@ -61,17 +49,17 @@ namespace IMDBDatabase
 		private int _titleAmmount;
 
 		/// <summary>
-		/// 
+		/// Ammount of people
 		/// </summary>
 		private int _peopleAmmount;
 
 		/// <summary>
-		/// 
+		/// Ammount of ratings
 		/// </summary>
 		private int _ratingAmmount;
 
 		/// <summary>
-		/// 
+		/// Ammount of episodes
 		/// </summary>
 		private int _episodeAmmount;
 
@@ -387,7 +375,8 @@ namespace IMDBDatabase
 
 			// Pass the info, ID is the key to the dictionary
 			_titleInfo.Add(id ,new Title(
-                rating, name, type, genres, isAdult, new string[] { startYear, endYear }));
+                rating, name, type, genres, isAdult, new string[] 
+				{ startYear, endYear }));
 		}
 
         /// <summary>
@@ -427,7 +416,8 @@ namespace IMDBDatabase
                     seasonNumber, 
                     episodeNumber);
             }
-            else if (_titleInfo.ContainsKey(parentID) && !_episodeDict.ContainsKey(parentID))
+            else if (_titleInfo.ContainsKey(parentID) && 
+				!_episodeDict.ContainsKey(parentID))
             {
                 // Create a new list in key value
                 _episodeDict.Add(parentID, new List<Title>());
@@ -539,7 +529,8 @@ namespace IMDBDatabase
         /// <summary>
         /// Get the current Person collection
         /// </summary>
-        /// <returns> Returns an IEnumerable containing IMDBDatabase.Person</returns>
+        /// <returns> Returns an IEnumerable containing 
+		/// IMDBDatabase.Person</returns>
         public ICollection<Person> GetPeople() => _peopleInfo;
 
 		/// <summary>
