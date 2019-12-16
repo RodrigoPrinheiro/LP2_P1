@@ -1,6 +1,11 @@
-﻿using System;
+﻿/// @file
+/// @brief This file will handle all the visuals and user selections.
+/// 
+/// @author Tomás Franco e Rodrigo Pinheiro
+/// @date 2019
+
+using System;
 using System.Threading;
-using System.Collections.Generic;
 using System.Text;
 using static System.Console;
 
@@ -90,10 +95,16 @@ namespace IMDBDatabase
             "\t\t\t\t\tEnter: Search\n" +
             "\t\t\t\t\t  Esc: Exit";
 
+		/// <summary>
+		/// Advanced search menu options.
+		/// </summary>
         private static readonly string[] _ADVANCED_SEARCH_OPTIONS =
             {"Name", "Type", "Genre", "Adult Content",
             "Start Year", "End Year", "##### SEARCH FOR TITLES! ####"};
 
+		/// <summary>
+		/// Title Genres.
+		/// </summary>
         private static readonly string[] _GENRES =
         {
             "Action", "Adventure", "Animation", "Biography", "Comedy", "Crime",
@@ -186,6 +197,7 @@ namespace IMDBDatabase
         {
             Clear();
 
+			// Initialize variables
             byte leftPos = 39;
             byte topPos = 21;
             byte yIndex = 1;
@@ -195,6 +207,7 @@ namespace IMDBDatabase
 
             _selectionArrowIndex = 0;
 
+			// Render visuals
             RenderIMDB();
             RenderMenu(_SEARCH_MENU_SUBTITLE_);
             RenderSolidBackgroundBlock(
@@ -222,6 +235,7 @@ namespace IMDBDatabase
             _selectionArrowPos[1] = topPos + 3;
             RenderVerticalSelectionArrow(false);
 
+			// Selection loop
             while (!leaveSwitch)
                 switch (WaitForAnyUserKeyPress().Key)
                 {
@@ -254,6 +268,7 @@ namespace IMDBDatabase
 		/// <param name="db">Main Database</param>
         public void RenderAdvancedSearch(Database db)
         {
+			// Initialize loop
             string name = null;
             TitleType type = 0;
             TitleGenre genre = 0;
@@ -263,6 +278,7 @@ namespace IMDBDatabase
 
             bool leaveDetailedSearch = false;
 
+			// Menu loop
             while (!leaveDetailedSearch)
             {
                 Clear();
@@ -300,6 +316,7 @@ namespace IMDBDatabase
                 _selectionArrowPos[1] = topPos + 3;
                 RenderVerticalSelectionArrow(false);
 
+				// Selection loop
                 while (!leaveSwitch)
                 {
                     switch (WaitForAnyUserKeyPress().Key)
@@ -374,6 +391,7 @@ namespace IMDBDatabase
                 }
             }
 
+			// Show results
             ShowTitleSearchResult(
                 db.AdvancedSearch(name, type, genre, content, startYear, endYear));
         }
@@ -384,6 +402,7 @@ namespace IMDBDatabase
 		/// <returns>Final type</returns>
         private int RenderTypeChoice()
         {
+			// Variables
             bool leaveSwitch = false;
 
             Clear();
@@ -393,6 +412,7 @@ namespace IMDBDatabase
             byte topPos = (byte)(21 - enumLength);
             byte yIndex = 1;
 
+			// Render Visuals
             RenderMenu(_SEARCH_MENU_SUBTITLE_);
             RenderSolidBackgroundBlock(
                 ConsoleColor.DarkYellow,
@@ -421,6 +441,7 @@ namespace IMDBDatabase
             _selectionArrowPos[1] = topPos + 3;
             RenderVerticalSelectionArrow(false);
 
+			// Selection loop
             while (!leaveSwitch)
                 switch (WaitForAnyUserKeyPress().Key)
                 {
@@ -453,6 +474,7 @@ namespace IMDBDatabase
 		/// <returns>Final genre</returns>
         private TitleGenre RenderGenreChoice()
         {
+			// Variables
             string userChoice = "";
 
             Clear();
@@ -462,6 +484,7 @@ namespace IMDBDatabase
 
             TitleGenre finalGenre = TitleGenre.Ignore;
 
+			// Visuals
             SetCursorPosition(leftPos + 4, topPos + 1);
             BackgroundColor = _DEFAULT_TITLE_COLOR;
             ResetColor();
@@ -969,12 +992,12 @@ namespace IMDBDatabase
 		/// <summary>
 		/// Render title info table
 		/// </summary>
-		/// <param name="headerTopPosition"></param>
-		/// <param name="headerLeftPosition"></param>
-		/// <param name="typeXpos"></param>
-		/// <param name="currentMinI"></param>
-		/// <param name="currentMaxI"></param>
-		/// <param name="titleName"></param>
+		/// <param name="headerTopPosition">top position of header</param>
+		/// <param name="headerLeftPosition">left position of header</param>
+		/// <param name="typeXpos">type left position</param>
+		/// <param name="currentMinI">Current minimum I</param>
+		/// <param name="currentMaxI">Current maximum I</param>
+		/// <param name="titleName">Target Title name</param>
         private void RenderTitleInfoTable(
             byte headerTopPosition, byte headerLeftPosition, byte typeXpos,
             int currentMinI, int currentMaxI, string titleName)
@@ -999,15 +1022,15 @@ namespace IMDBDatabase
 		/// <summary>
 		/// Render search result table
 		/// </summary>
-		/// <param name="headerTopPosition"></param>
-		/// <param name="headerLeftPosition"></param>
-		/// <param name="typeXPos"></param>
-		/// <param name="lengh"></param>
-		/// <param name="currentMinI"></param>
-		/// <param name="maxCurrentI"></param>
-        private void RenderSearchResultTable(
+		/// <param name="headerTopPosition">top position of header</param>
+		/// <param name="headerLeftPosition">left position of header</param>
+		/// <param name="typeXPos">type left position</param>
+		/// <param name="length">length</param>
+		/// <param name="currentMinI">Current minimum I</param>
+		/// <param name="maxCurrentI">Current maximum I</param>
+		private void RenderSearchResultTable(
             byte headerTopPosition, byte headerLeftPosition, byte typeXPos,
-            int lengh, int currentMinI, int maxCurrentI)
+            int length, int currentMinI, int maxCurrentI)
         {
             // Draw yellow
             RenderSolidBackgroundBlock(
@@ -1023,14 +1046,14 @@ namespace IMDBDatabase
 
             // Make hole
             UpdateResultViewport(headerTopPosition, headerLeftPosition, typeXPos,
-                lengh, currentMinI, maxCurrentI);
+				length, currentMinI, maxCurrentI);
         }
 
 		/// <summary>
 		/// Update Result viewport
 		/// </summary>
-		/// <param name="headerTopPosition"></param>
-		/// <param name="headerLeftPosition"></param>
+		/// <param name="headerTopPosition">Header top position</param>
+		/// <param name="headerLeftPosition">Header left position</param>
 		/// <param name="typeXPos"></param>
 		/// <param name="lengh"></param>
 		/// <param name="currentMinI"></param>
@@ -1073,7 +1096,9 @@ namespace IMDBDatabase
 		/// <param name="top">Top position</param>
         private void SetCursorPosition(int? left = null, int? top = null)
         {
+			// Change left position
             if (left != null) CursorLeft = (int)left;
+			// Change top position
             if (top != null) CursorTop = (int)top;
         }
 

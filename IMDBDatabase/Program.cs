@@ -27,11 +27,13 @@ namespace IMDBDatabase
 		/// </summary>
 		private void Start()
 		{
+			// Initialize variables
 			int userMenuDecision = 0;
 			string userSearch = "";
 			IInterface ui = new ConsoleInterface();
 			Database db = new Database();
 
+			// Selection loop
 			while (true)
 			{
 				ui.RenderStartMenu(out userMenuDecision);
