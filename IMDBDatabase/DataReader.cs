@@ -2,7 +2,7 @@
 /// @brief This file contains class IMDBDatabase.DataReader, 
 /// this will read the compressed data files and store them for later use.
 /// 
-/// @author Tomás Franco
+/// @author Tomás Franco e Rodrigo Pinheiro
 /// @date 2019
 
 using System;

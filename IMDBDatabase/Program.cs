@@ -1,10 +1,20 @@
-﻿using System;
+﻿/// @file
+/// @brief This is the main file that runs the program.
+/// 
+/// @author Tomás Franco e Rodrigo Pinheiro
+/// @date 2019
 
 namespace IMDBDatabase
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	class Program
 	{
-
+		/// <summary>
+		/// Main method
+		/// </summary>
+		/// <param name="args">User passed arguments</param>
 		static void Main(string[] args)
 		{
 			Program prog = new Program();
@@ -44,7 +54,7 @@ namespace IMDBDatabase
                         ui.ShowTitleSearchResult(
                             db.SearchPersonName(userSearch));
 						break;
-					// Detailed
+					// Detailed Search
 					case 2:
 						ui.RenderAdvancedSearch(db);
 						break;
