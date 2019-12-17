@@ -184,6 +184,10 @@ namespace IMDBDatabase
             return i;
         }
 
+		/// <summary>
+		/// Get associated titles (episodes)
+		/// </summary>
+		/// <returns>Array with all titles</returns>
         public IReadable[] GetCoupled()
         {
             return _episodes.ToArray<IReadable>();
@@ -230,11 +234,19 @@ namespace IMDBDatabase
             return info.ToString();
 		}
 
+		/// <summary>
+		/// Get parent title.
+		/// </summary>
+		/// <returns>Parent title</returns>
         public IReadable GetParentInfo()
         {
             return _parentTitle as IReadable;
         }
 
+		/// <summary>
+		/// Get everyone who participated in the title.
+		/// </summary>
+		/// <returns>Array with every person.</returns>
         public IReadable[] GetCrew()
         {
             return _crew.ToArray<IReadable>();

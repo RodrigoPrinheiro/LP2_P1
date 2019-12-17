@@ -49,17 +49,17 @@ namespace IMDBDatabase
 		private int _titleAmmount;
 
 		/// <summary>
-		/// Ammount of people
+		/// Amount of people
 		/// </summary>
 		private int _peopleAmmount;
 
 		/// <summary>
-		/// Ammount of ratings
+		/// Amount of ratings
 		/// </summary>
 		private int _ratingAmmount;
 
 		/// <summary>
-		/// Ammount of episodes
+		/// Amount of episodes
 		/// </summary>
 		private int _episodeAmmount;
 

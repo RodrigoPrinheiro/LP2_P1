@@ -87,7 +87,15 @@ namespace IMDBDatabase
             return $"{Name}\t{birthYear}\t{deathYear}\t{Professions}";
         }
 
+		/// <summary>
+		/// Unused method.
+		/// </summary>
+		/// <returns>null</returns>
         public IReadable GetParentInfo() => null;
+		/// <summary>
+		/// Unused method.
+		/// </summary>
+		/// <returns>null</returns>
         public IReadable[] GetCrew() => null;
     }
 }

@@ -110,6 +110,11 @@ namespace IMDBDatabase
 				StringComparison.CurrentCultureIgnoreCase));
         }
         
+		/// <summary>
+		/// Search for title names that contain the passed string.
+		/// </summary>
+		/// <param name="nameContent">word to search for.</param>
+		/// <returns></returns>
         public IReadable[] SearchName(string nameContent)
         {
             return _titles.Where(x => x.Name.Contains
@@ -117,7 +122,12 @@ namespace IMDBDatabase
             ToArray<IReadable>();
         }
 
-        public IReadable[] SearchPersonName(string name)
+		/// <summary>
+		/// Search for people names that contain the passed string.
+		/// </summary>
+		/// <param name="name">word to search for.</param>
+		/// <returns></returns>
+		public IReadable[] SearchPersonName(string name)
         {
             return _people.Where(x => x.Name.Contains
             (name, StringComparison.CurrentCultureIgnoreCase)).

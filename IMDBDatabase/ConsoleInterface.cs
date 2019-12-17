@@ -1090,7 +1090,7 @@ namespace IMDBDatabase
         }
 
 		/// <summary>
-		/// Change cursor positon
+		/// Change cursor position
 		/// </summary>
 		/// <param name="left">Left position</param>
 		/// <param name="top">Top position</param>

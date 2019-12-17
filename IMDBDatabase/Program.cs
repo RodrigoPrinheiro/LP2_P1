@@ -7,7 +7,7 @@
 namespace IMDBDatabase
 {
 	/// <summary>
-	/// 
+	/// Connects everything and runs the program
 	/// </summary>
 	class Program
 	{
