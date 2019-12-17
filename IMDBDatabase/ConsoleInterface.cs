@@ -85,7 +85,9 @@ namespace IMDBDatabase
         private static readonly string[] _TITLE_INFO_HEADERS =
             {"Type", "Adult Content", "Score", "Votes",
             "Start Year", "End Year", "Genres"};
-
+        /// <summary>
+        /// Person header info to use in detailed person info.
+        /// </summary>
         private static readonly string[] _PERSON_DETAILED_INFO =
             {"Birth Year", "Death Year", "Professions"};
         /// <summary>
